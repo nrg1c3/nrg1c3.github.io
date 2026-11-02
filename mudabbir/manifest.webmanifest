@@ -1,0 +1,94 @@
+{
+ "id": "/mudabbir/",
+ "name": "مُدبّر",
+ "short_name": "مُدبّر",
+ "description": "مُدبّر: قولها وهو يدبّرها. بيرتب يومك وبيتك وفلوسك ويفكّرك في الوقت الصح",
+ "lang": "ar",
+ "dir": "rtl",
+ "start_url": "/mudabbir/",
+ "scope": "/mudabbir/",
+ "display": "standalone",
+ "orientation": "portrait",
+ "background_color": "#0F5552",
+ "theme_color": "#0F5552",
+ "categories": [
+  "productivity",
+  "health",
+  "lifestyle"
+ ],
+ "icons": [
+  {
+   "src": "icon-192.png",
+   "sizes": "192x192",
+   "type": "image/png"
+  },
+  {
+   "src": "icon-512.png",
+   "sizes": "512x512",
+   "type": "image/png"
+  },
+  {
+   "src": "icon-maskable-512.png",
+   "sizes": "512x512",
+   "type": "image/png",
+   "purpose": "maskable"
+  }
+ ],
+ "shortcuts": [
+  {
+   "name": "فرّغ دماغك",
+   "short_name": "فرّغ دماغك",
+   "url": "/mudabbir/?go=dump",
+   "icons": [
+    {
+     "src": "icon-192.png",
+     "sizes": "192x192"
+    }
+   ]
+  },
+  {
+   "name": "تركيز",
+   "short_name": "تركيز",
+   "url": "/mudabbir/?go=focus",
+   "icons": [
+    {
+     "src": "icon-192.png",
+     "sizes": "192x192"
+    }
+   ]
+  },
+  {
+   "name": "الفلوس",
+   "short_name": "الفلوس",
+   "url": "/mudabbir/?go=money",
+   "icons": [
+    {
+     "src": "icon-192.png",
+     "sizes": "192x192"
+    }
+   ]
+  },
+  {
+   "name": "ناقص في البيت",
+   "short_name": "ناقص في البيت",
+   "url": "/mudabbir/?go=need",
+   "icons": [
+    {
+     "src": "icon-192.png",
+     "sizes": "192x192"
+    }
+   ]
+  },
+  {
+   "name": "ادفع فاتورة",
+   "short_name": "ادفع فاتورة",
+   "url": "/mudabbir/?go=pay",
+   "icons": [
+    {
+     "src": "icon-192.png",
+     "sizes": "192x192"
+    }
+   ]
+  }
+ ]
+}

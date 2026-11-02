@@ -1,0 +1,269 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Sanady · ADHD Support — Join the founding list</title>
+<meta name="description" content="Sanady is a voice-first AI companion for adults with ADHD. Join the founding list.">
+<meta property="og:title" content="Sanady · ADHD Support">
+<meta property="og:description" content="Say everything on your mind. Sanady sorts it, reminds you at the right moment, and starts the first small step with you.">
+<meta property="og:image" content="https://nrg1c3.github.io/join/og.png">
+<meta name="theme-color" content="#101326">
+<link rel="icon" href="icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#101326;--card:#1A1E3A;--line:#2F3560;--ink:#F3F4FB;--mut:#A9AECF;--pri:#FFD24C;--onpri:#1B1530;--ok:#3FB28A;--red:#E0645A}
+*{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--ink)}
+body{font-family:Inter,system-ui,sans-serif;line-height:1.55;font-size:17px;padding:0 16px 48px}
+html[lang=ar] body{font-family:Cairo,Tahoma,sans-serif}
+.wrap{max-width:560px;margin:0 auto}
+header{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 0}
+.brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:19px}.brand img{width:40px;height:40px;border-radius:10px}
+select.lang{background:var(--card);color:var(--ink);border:1px solid var(--line);border-radius:10px;padding:8px 10px;font:inherit;font-size:15px}
+h1{font-size:clamp(28px,7vw,38px);line-height:1.2;margin:8px 0 12px;font-weight:800}
+h2{font-size:22px;margin:0 0 6px;line-height:1.3}
+p{margin:0 0 12px}.mut{color:var(--mut);font-size:15px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:20px;margin:16px 0}
+ul.why{list-style:none;padding:0;margin:0 0 4px}ul.why li{display:flex;gap:10px;margin:10px 0}ul.why b{color:var(--pri)}
+.btn{display:block;width:100%;border:0;border-radius:14px;background:var(--pri);color:var(--onpri);font:inherit;font-weight:800;font-size:18px;padding:15px;cursor:pointer;margin-top:14px;text-align:center;text-decoration:none}
+.btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line);font-weight:600}
+.btn:disabled{opacity:.5}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}
+.chip{border:1px solid var(--line);background:transparent;color:var(--ink);border-radius:999px;padding:10px 14px;font:inherit;font-size:15px;cursor:pointer}
+.chip.on{background:var(--pri);color:var(--onpri);border-color:var(--pri);font-weight:600}
+.scale{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin:6px 0 16px}.scale button{padding:10px 0;border-radius:12px;border:1px solid var(--line);background:transparent;color:var(--ink);font:inherit;font-size:16px;cursor:pointer}.scale button.on{background:var(--pri);color:var(--onpri);border-color:var(--pri);font-weight:800}
+.ends{display:flex;justify-content:space-between;font-size:13px;color:var(--mut);margin-top:-12px;margin-bottom:14px}
+.nps{grid-template-columns:repeat(11,1fr)}.nps button{font-size:14px;padding:9px 0}
+label.f{display:block;margin:12px 0 4px;font-weight:600}
+input[type=text],input[type=email],input[type=number],select.f,textarea{width:100%;background:var(--bg);color:var(--ink);border:1px solid var(--line);border-radius:12px;padding:12px;font:inherit}
+textarea{min-height:80px}
+.check{display:flex;gap:10px;align-items:flex-start;margin:12px 0;font-size:15px}.check input{margin-top:5px;width:20px;height:20px;flex:none}
+.bar{height:6px;background:var(--line);border-radius:6px;overflow:hidden;margin:4px 0 0}.bar i{display:block;height:100%;background:var(--pri);width:0;transition:width .3s}
+.price{font-size:34px;font-weight:800;color:var(--pri)}
+.hp{position:absolute;left:-9999px;width:1px;height:1px;opacity:0}
+.err{color:var(--red);font-size:15px;min-height:1em}
+.step{display:none}.step.on{display:block}
+footer{margin-top:28px;font-size:13px;color:var(--mut);text-align:center}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header><div class="brand"><img src="icon.png" alt=""><span>Sanady</span></div>
+<select class="lang" id="lang" aria-label="Language"><option value="en">English</option><option value="ar">العربية</option><option value="fr">Français</option><option value="es">Español</option><option value="de">Deutsch</option></select></header>
+<div class="bar" aria-hidden="true"><i id="prog"></i></div>
+
+<!-- 0: intro -->
+<section class="step on" data-s="0">
+ <h1 data-t="h1"></h1><p data-t="lead"></p>
+ <div class="card"><ul class="why"><li>🎙️ <span data-t="w1"></span></li><li>⏰ <span data-t="w2"></span></li><li>🪜 <span data-t="w3"></span></li><li>🤖 <span data-t="w4"></span></li><li>🔒 <span data-t="w5"></span></li></ul></div>
+ <p class="mut" data-t="founding"></p>
+ <button class="btn" data-next data-t="start"></button>
+ <p class="mut" style="text-align:center;margin-top:10px" data-t="time"></p>
+</section>
+
+<!-- 1: about you -->
+<section class="step" data-s="1">
+ <h2 data-t="q_who"></h2>
+ <div class="chips" data-one="who"><button class="chip" data-v="diagnosed" data-t="who_d"></button><button class="chip" data-v="suspect" data-t="who_s"></button><button class="chip" data-v="carer" data-t="who_c"></button></div>
+ <label class="f" for="country" data-t="q_country"></label>
+ <select class="f" id="country"></select>
+ <label class="check"><input type="checkbox" id="adult"><span data-t="adult"></span></label>
+ <p class="err" id="e1"></p><button class="btn" data-next data-t="next"></button>
+</section>
+
+<!-- 2: what is hard -->
+<section class="step" data-s="2">
+ <h2 data-t="q_hard"></h2><p class="mut" data-t="pick_any"></p>
+ <div class="chips" data-many="hard">
+  <button class="chip" data-v="start" data-t="h_start"></button><button class="chip" data-v="forget" data-t="h_forget"></button><button class="chip" data-v="time" data-t="h_time"></button>
+  <button class="chip" data-v="money" data-t="h_money"></button><button class="chip" data-v="big" data-t="h_big"></button><button class="chip" data-v="home" data-t="h_home"></button>
+  <button class="chip" data-v="overwhelm" data-t="h_over"></button><button class="chip" data-v="reply" data-t="h_reply"></button></div>
+ <p class="err" id="e2"></p><button class="btn" data-next data-t="next"></button>
+</section>
+
+<!-- 3: ratings (also used one month later) -->
+<section class="step" data-s="3">
+ <h2 data-t="q_rate"></h2><p class="mut" data-t="rate_hint"></p>
+ <div id="rates"></div>
+ <p class="err" id="e3"></p><button class="btn" data-next data-t="next"></button>
+</section>
+
+<!-- 4: what you use now -->
+<section class="step" data-s="4">
+ <h2 data-t="q_use"></h2><p class="mut" data-t="pick_any"></p>
+ <div class="chips" data-many="use">
+  <button class="chip" data-v="nothing" data-t="u_nothing"></button><button class="chip" data-v="paper" data-t="u_paper"></button><button class="chip" data-v="reminders" data-t="u_rem"></button>
+  <button class="chip" data-v="calendar" data-t="u_cal"></button><button class="chip" data-v="todo" data-t="u_todo"></button><button class="chip" data-v="adhd_app" data-t="u_app"></button>
+  <button class="chip" data-v="meds" data-t="u_meds"></button><button class="chip" data-v="coach" data-t="u_coach"></button></div>
+ <button class="btn" data-next data-t="next"></button>
+</section>
+
+<!-- 5: price -->
+<section class="step" data-s="5">
+ <h2 data-t="q_price"></h2>
+ <div class="card" style="text-align:center"><div class="price" id="priceTxt"></div><p class="mut" data-t="price_note"></p></div>
+ <div class="chips" data-one="price_ans"><button class="chip" data-v="yes" data-t="p_yes"></button><button class="chip" data-v="maybe" data-t="p_maybe"></button><button class="chip" data-v="expensive" data-t="p_exp"></button><button class="chip" data-v="no" data-t="p_no"></button></div>
+ <label class="f" for="fair" data-t="q_fair"></label>
+ <div style="display:flex;gap:8px;align-items:center"><input type="number" id="fair" inputmode="decimal" min="0" step="0.5" style="flex:1"><b id="cur"></b></div>
+ <p class="err" id="e5"></p><button class="btn" data-next data-t="next"></button>
+</section>
+
+<!-- 6: contact -->
+<section class="step" data-s="6">
+ <h2 data-t="q_contact"></h2><p class="mut" data-t="contact_hint"></p>
+ <label class="f" for="contact" data-t="contact_l"></label><input type="text" id="contact" autocomplete="email" dir="ltr">
+ <label class="f" data-t="q_applang"></label>
+ <div class="chips" data-one="applang"><button class="chip" data-v="ar" >العربية</button><button class="chip" data-v="en">English</button><button class="chip" data-v="fr">Français</button><button class="chip" data-v="es">Español</button><button class="chip" data-v="de">Deutsch</button><button class="chip" data-v="other" data-t="other"></button></div>
+ <input class="hp" id="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+ <label class="check"><input type="checkbox" id="consent"><span data-t="consent"></span></label>
+ <p class="err" id="e6"></p><button class="btn" id="send" data-t="send"></button>
+</section>
+
+<!-- 7: done -->
+<section class="step" data-s="7">
+ <h1 data-t="done_h"></h1><p data-t="done_p"></p>
+ <div class="card"><p data-t="done_next"></p></div>
+ <button class="btn ghost" id="share" data-t="share"></button>
+ <a class="btn ghost" href="https://nrg1c3.github.io/Sanady/" data-t="try"></a>
+</section>
+
+<!-- after one month -->
+<section class="step" data-s="10">
+ <h1 data-t="a_h"></h1><p data-t="a_p"></p>
+ <h2 style="margin-top:18px" data-t="q_rate"></h2><div id="rates2"></div>
+ <h2 data-t="a_nps"></h2><div class="scale nps" id="nps"></div><div class="ends"><span data-t="nps_lo"></span><span data-t="nps_hi"></span></div>
+ <h2 data-t="a_keep"></h2>
+ <div class="chips" data-one="keep"><button class="chip" data-v="yes" data-t="p_yes"></button><button class="chip" data-v="maybe" data-t="p_maybe"></button><button class="chip" data-v="no" data-t="k_no"></button></div>
+ <h2 data-t="a_fav"></h2>
+ <div class="chips" data-many="fav"><button class="chip" data-v="dump" data-t="f_dump"></button><button class="chip" data-v="alarms" data-t="f_alarm"></button><button class="chip" data-v="one" data-t="f_one"></button><button class="chip" data-v="agent" data-t="f_agent"></button><button class="chip" data-v="steps" data-t="f_steps"></button><button class="chip" data-v="with" data-t="f_with"></button><button class="chip" data-v="money" data-t="f_money"></button></div>
+ <label class="f" for="better" data-t="a_better"></label><textarea id="better"></textarea>
+ <p class="err" id="e10"></p><button class="btn" id="sendAfter" data-t="send"></button>
+</section>
+<section class="step" data-s="11"><h1 data-t="a_done"></h1><p data-t="a_done_p"></p></section>
+
+<footer><span data-t="foot"></span></footer>
+</div>
+<script>
+const API='https://api.nrg-egypt.com/webhook/sanady-join';
+const T={
+en:{h1:"Your brain is full. Say it out loud.",lead:"Sanady is a voice-first AI companion for adults with ADHD. Say everything on your mind once; it sorts it, reminds you at the right moment, and starts the first small step with you.",
+w1:"<b>Brain dump by voice.</b> Tasks, appointments, bills and ideas sorted for you.",w2:"<b>Alarms that ring</b> even when the app is closed.",w3:"<b>Big tasks become one small step a day.</b>",w4:"<b>It replans your day when you fall behind</b>, tells you what it changed, and lets you undo it. No blame.",w5:"<b>Your data stays on your phone.</b>",
+founding:"We are opening a small founding group. Founding members get a special price and shape the app with us.",start:"Join the founding list",time:"About 2 minutes · 6 short questions",next:"Next",
+q_who:"Which one is you?",who_d:"I have ADHD (diagnosed)",who_s:"I think I have ADHD",who_c:"I'm here for someone I care about",q_country:"Where do you live?",adult:"I am 18 or older",
+q_hard:"What's hardest for you?",pick_any:"Pick as many as you like.",h_start:"Starting tasks",h_forget:"Forgetting appointments",h_time:"Losing track of time",h_money:"Bills and money",h_big:"Finishing big projects",h_home:"Home and chores",h_over:"Too many thoughts at once",h_reply:"Replying to messages",
+q_rate:"In the last 2 weeks…",rate_hint:"1 = not at all · 5 = very much",r1:"Starting tasks was hard for me",r2:"I missed appointments or deadlines",r3:"My mind felt overwhelmed",r4:"I felt in control of my day",
+q_use:"What helps you today?",u_nothing:"Nothing really",u_paper:"Paper notes",u_rem:"Phone reminders",u_cal:"A calendar",u_todo:"A to-do app",u_app:"An ADHD app",u_meds:"Medication",u_coach:"A coach or therapist",
+q_price:"Founding price",price_note:"per month · first month free · cancel anytime. You won't be charged now.",p_yes:"I'd subscribe",p_maybe:"Maybe",p_exp:"Too expensive",p_no:"Not for me",q_fair:"What would feel fair per month?",
+q_contact:"Where should we send your invite?",contact_hint:"Email or WhatsApp number. We'll send your invite and, after one month, a 1-minute check-in.",contact_l:"Email or WhatsApp",q_applang:"Which language do you want the app in?",other:"Other",
+consent:"I agree that Sanady stores my answers and contact to invite me and improve the app. Some answers are about ADHD. They are never sold or shared, and I can ask to delete them anytime by replying to the invite.",send:"Join",
+done_h:"You're on the list 💛",done_p:"Thank you. You're one of the first people helping shape Sanady.",done_next:"We'll send your invite soon. After one month of using it, we'll ask the same 4 questions again, so we can see if it really helps.",share:"Share with someone who needs it",try:"Try the free demo now",
+a_h:"One month with Sanady",a_p:"1 minute. Your honest answers decide what we build next.",a_nps:"How likely are you to recommend Sanady to a friend with ADHD?",nps_lo:"Not likely",nps_hi:"Very likely",a_keep:"Would you keep paying for it?",k_no:"No",a_fav:"What helped most?",f_dump:"Voice brain dump",f_alarm:"Alarms",f_one:"One thing at a time",f_agent:"It replans my day",f_steps:"Small steps",f_with:"Body double (With you)",f_money:"Money and bills",a_better:"What should we fix or add?",a_done:"Thank you 💛",a_done_p:"We read every answer.",
+err_pick:"Please choose one.",err_adult:"Sanady is for adults 18+.",err_rate:"Please answer all four.",err_contact:"Please add an email or WhatsApp number.",err_consent:"Please tick the box to continue.",err_net:"Couldn't send. Check your internet and try again.",
+foot:"Sanady is a support tool, not therapy or medical advice. Made by NRG.",share_txt:"I just joined the founding list of Sanady, a voice AI companion for ADHD:"},
+ar:{h1:"دماغك مليان؟ قوله بصوتك.",lead:"سندي رفيق ذكي بالصوت للكبار اللي عندهم ADHD. قول كل اللي في دماغك مرة واحدة، وهو يرتبه، ويفكّرك في الوقت الصح، ويبدأ معاك أول خطوة صغيرة.",
+w1:"<b>فرّغ دماغك بصوتك.</b> مهام ومواعيد وفواتير وأفكار بتترتب لوحدها.",w2:"<b>منبّه بيرن</b> حتى والتطبيق مقفول.",w3:"<b>المهمة الكبيرة بتبقى خطوة صغيرة كل يوم.</b>",w4:"<b>لما تتأخر بيرتب يومك لوحده</b>، ويقولك غيّر إيه، وتقدر ترجّعه. من غير لوم.",w5:"<b>بياناتك على موبايلك.</b>",
+founding:"بنفتح مجموعة مؤسسين صغيرة. المؤسسين بياخدوا سعر خاص وبيشاركوا معانا في بناء التطبيق.",start:"انضم لقايمة المؤسسين",time:"حوالي دقيقتين · 6 أسئلة قصيرة",next:"التالي",
+q_who:"إنت مين فيهم؟",who_d:"عندي ADHD (متشخص)",who_s:"أظن عندي ADHD",who_c:"أنا هنا عشان حد يهمني",q_country:"ساكن فين؟",adult:"عندي 18 سنة أو أكتر",
+q_hard:"إيه أصعب حاجة عليك؟",pick_any:"اختار اللي يناسبك، أي عدد.",h_start:"أبدأ المهام",h_forget:"أنسى المواعيد",h_time:"الوقت بيهرب مني",h_money:"الفواتير والفلوس",h_big:"أخلّص المشاريع الكبيرة",h_home:"البيت والشغل اللي فيه",h_over:"أفكار كتير في نفس الوقت",h_reply:"أرد على الرسايل",
+q_rate:"في آخر أسبوعين…",rate_hint:"1 = خالص · 5 = جداً",r1:"كان صعب عليا أبدأ المهام",r2:"فوّتّ مواعيد أو حاجات ليها ميعاد",r3:"دماغي كانت مزحومة",r4:"كنت حاسس إني متحكم في يومي",
+q_use:"إيه اللي بيساعدك دلوقتي؟",u_nothing:"ولا حاجة تقريباً",u_paper:"ورق ونوت",u_rem:"تذكير الموبايل",u_cal:"كالندر",u_todo:"تطبيق مهام",u_app:"تطبيق ADHD",u_meds:"دوا",u_coach:"كوتش أو معالج",
+q_price:"سعر المؤسسين",price_note:"في الشهر · أول شهر مجاناً · تلغي في أي وقت. مش هتدفع حاجة دلوقتي.",p_yes:"هشترك",p_maybe:"ممكن",p_exp:"غالي",p_no:"مش ليا",q_fair:"إيه السعر اللي تشوفه مناسب في الشهر؟",
+q_contact:"نبعتلك الدعوة فين؟",contact_hint:"إيميل أو رقم واتساب. هنبعتلك الدعوة، وبعد شهر رسالة فيها أسئلة دقيقة واحدة.",contact_l:"إيميل أو واتساب",q_applang:"عايز التطبيق بأنهي لغة؟",other:"لغة تانية",
+consent:"موافق إن سندي يحفظ إجاباتي ووسيلة التواصل عشان يبعتلي الدعوة ويحسّن التطبيق. بعض الإجابات عن الـ ADHD. مش بتتباع ولا بتتشارك، وأقدر أطلب مسحها في أي وقت بالرد على رسالة الدعوة.",send:"انضم",
+done_h:"إنت في القايمة 💛",done_p:"شكراً. إنت من أول الناس اللي بيبنوا سندي معانا.",done_next:"هنبعتلك الدعوة قريب. وبعد شهر من الاستخدام هنسألك نفس الـ 4 أسئلة تاني، عشان نشوف هو بيفرق فعلاً ولا لأ.",share:"شاركه مع حد محتاجه",try:"جرّب النسخة المجانية دلوقتي",
+a_h:"شهر مع سندي",a_p:"دقيقة واحدة. إجاباتك الصريحة هي اللي بتحدد هنبني إيه بعد كده.",a_nps:"قد إيه ممكن ترشّح سندي لصاحبك اللي عنده ADHD؟",nps_lo:"مستبعد",nps_hi:"أكيد",a_keep:"هتكمل تدفع فيه؟",k_no:"لأ",a_fav:"إيه أكتر حاجة ساعدتك؟",f_dump:"التفريغ بالصوت",f_alarm:"المنبّه",f_one:"حاجة واحدة في المرة",f_agent:"بيرتب يومي لوحده",f_steps:"الخطوات الصغيرة",f_with:"جنبك (الشغل جنب حد)",f_money:"الفلوس والفواتير",a_better:"نصلح أو نضيف إيه؟",a_done:"شكراً 💛",a_done_p:"بنقرا كل إجابة.",
+err_pick:"اختار واحدة من فضلك.",err_adult:"سندي للكبار من 18 سنة.",err_rate:"جاوب على الأربعة من فضلك.",err_contact:"اكتب إيميل أو رقم واتساب.",err_consent:"علّم على المربع عشان نكمّل.",err_net:"معرفتش أبعت. اتأكد من النت وجرّب تاني.",
+foot:"سندي أداة مساعدة، مش علاج ولا نصيحة طبية. من NRG.",share_txt:"انضميت لقايمة مؤسسي سندي، رفيق ذكي بالصوت للي عندهم ADHD:"},
+fr:{h1:"Votre tête est pleine ? Dites-le à voix haute.",lead:"Sanady est un compagnon IA vocal pour les adultes avec un TDAH. Dites tout ce que vous avez en tête une fois ; il trie, vous rappelle au bon moment et commence la première petite étape avec vous.",
+w1:"<b>Vidage de tête à la voix.</b> Tâches, rendez-vous, factures et idées triés pour vous.",w2:"<b>Des alarmes qui sonnent</b> même appli fermée.",w3:"<b>Les grosses tâches deviennent une petite étape par jour.</b>",w4:"<b>Il réorganise votre journée quand vous prenez du retard</b>, vous dit ce qu'il a changé, et vous pouvez annuler. Sans jugement.",w5:"<b>Vos données restent sur votre téléphone.</b>",
+founding:"Nous ouvrons un petit groupe de membres fondateurs, avec un prix spécial et une vraie voix dans le produit.",start:"Rejoindre la liste des fondateurs",time:"Environ 2 minutes · 6 questions courtes",next:"Suivant",
+q_who:"Qui êtes-vous ?",who_d:"J'ai un TDAH (diagnostiqué)",who_s:"Je pense avoir un TDAH",who_c:"Je viens pour un proche",q_country:"Où vivez-vous ?",adult:"J'ai 18 ans ou plus",
+q_hard:"Qu'est-ce qui est le plus difficile ?",pick_any:"Choisissez autant que vous voulez.",h_start:"Commencer une tâche",h_forget:"Oublier des rendez-vous",h_time:"Perdre la notion du temps",h_money:"Factures et argent",h_big:"Finir les gros projets",h_home:"Maison et tâches ménagères",h_over:"Trop de pensées à la fois",h_reply:"Répondre aux messages",
+q_rate:"Ces 2 dernières semaines…",rate_hint:"1 = pas du tout · 5 = beaucoup",r1:"J'ai eu du mal à commencer mes tâches",r2:"J'ai manqué des rendez-vous ou des échéances",r3:"Je me suis senti(e) débordé(e)",r4:"Je me suis senti(e) maître de ma journée",
+q_use:"Qu'est-ce qui vous aide aujourd'hui ?",u_nothing:"Rien vraiment",u_paper:"Notes papier",u_rem:"Rappels du téléphone",u_cal:"Un agenda",u_todo:"Une appli de tâches",u_app:"Une appli TDAH",u_meds:"Un traitement",u_coach:"Un coach ou thérapeute",
+q_price:"Prix fondateur",price_note:"par mois · premier mois offert · résiliable à tout moment. Aucun paiement maintenant.",p_yes:"Je m'abonnerais",p_maybe:"Peut-être",p_exp:"Trop cher",p_no:"Pas pour moi",q_fair:"Quel prix mensuel vous semblerait juste ?",
+q_contact:"Où envoyer votre invitation ?",contact_hint:"E-mail ou numéro WhatsApp. Nous enverrons l'invitation puis, après un mois, un petit questionnaire d'1 minute.",contact_l:"E-mail ou WhatsApp",q_applang:"Dans quelle langue voulez-vous l'appli ?",other:"Autre",
+consent:"J'accepte que Sanady conserve mes réponses et mon contact pour m'inviter et améliorer l'appli. Certaines réponses concernent le TDAH. Elles ne sont jamais vendues ni partagées, et je peux demander leur suppression à tout moment en répondant à l'invitation.",send:"Rejoindre",
+done_h:"Vous êtes sur la liste 💛",done_p:"Merci. Vous faites partie des premières personnes à construire Sanady avec nous.",done_next:"Nous vous enverrons votre invitation bientôt. Après un mois d'utilisation, nous reposerons les mêmes 4 questions pour voir si cela aide vraiment.",share:"Partager avec quelqu'un qui en a besoin",try:"Essayer la démo gratuite",
+a_h:"Un mois avec Sanady",a_p:"1 minute. Vos réponses sincères décident de la suite.",a_nps:"Recommanderiez-vous Sanady à un ami avec un TDAH ?",nps_lo:"Peu probable",nps_hi:"Très probable",a_keep:"Continueriez-vous à payer ?",k_no:"Non",a_fav:"Qu'est-ce qui vous a le plus aidé ?",f_dump:"Vidage de tête vocal",f_alarm:"Alarmes",f_one:"Une chose à la fois",f_agent:"Il réorganise ma journée",f_steps:"Petites étapes",f_with:"Body double",f_money:"Argent et factures",a_better:"Que devons-nous corriger ou ajouter ?",a_done:"Merci 💛",a_done_p:"Nous lisons chaque réponse.",
+err_pick:"Merci d'en choisir une.",err_adult:"Sanady est réservé aux adultes (18+).",err_rate:"Merci de répondre aux quatre.",err_contact:"Ajoutez un e-mail ou un numéro WhatsApp.",err_consent:"Cochez la case pour continuer.",err_net:"Envoi impossible. Vérifiez votre connexion.",
+foot:"Sanady est un outil d'aide, pas une thérapie ni un avis médical. Par NRG.",share_txt:"Je viens de rejoindre la liste des fondateurs de Sanady, un compagnon IA vocal pour le TDAH :"},
+es:{h1:"¿Tienes la cabeza llena? Dilo en voz alta.",lead:"Sanady es un compañero de IA por voz para adultos con TDAH. Di todo lo que tienes en mente una vez; lo ordena, te recuerda en el momento justo y empieza contigo el primer paso pequeño.",
+w1:"<b>Vacía tu mente con la voz.</b> Tareas, citas, facturas e ideas ordenadas por ti.",w2:"<b>Alarmas que suenan</b> aunque la app esté cerrada.",w3:"<b>Las tareas grandes se vuelven un paso pequeño al día.</b>",w4:"<b>Reorganiza tu día cuando te atrasas</b>, te dice qué cambió y puedes deshacerlo. Sin culpa.",w5:"<b>Tus datos se quedan en tu teléfono.</b>",
+founding:"Abrimos un pequeño grupo de miembros fundadores, con precio especial y voz real en el producto.",start:"Unirme a la lista de fundadores",time:"Unos 2 minutos · 6 preguntas cortas",next:"Siguiente",
+q_who:"¿Cuál eres tú?",who_d:"Tengo TDAH (diagnosticado)",who_s:"Creo que tengo TDAH",who_c:"Vengo por alguien que quiero",q_country:"¿Dónde vives?",adult:"Tengo 18 años o más",
+q_hard:"¿Qué es lo más difícil para ti?",pick_any:"Elige todas las que quieras.",h_start:"Empezar tareas",h_forget:"Olvidar citas",h_time:"Perder la noción del tiempo",h_money:"Facturas y dinero",h_big:"Terminar proyectos grandes",h_home:"Casa y tareas del hogar",h_over:"Demasiados pensamientos a la vez",h_reply:"Responder mensajes",
+q_rate:"En las últimas 2 semanas…",rate_hint:"1 = nada · 5 = mucho",r1:"Me costó empezar las tareas",r2:"Me perdí citas o plazos",r3:"Mi mente se sintió saturada",r4:"Sentí que controlaba mi día",
+q_use:"¿Qué te ayuda hoy?",u_nothing:"Nada, la verdad",u_paper:"Notas en papel",u_rem:"Recordatorios del móvil",u_cal:"Un calendario",u_todo:"Una app de tareas",u_app:"Una app para TDAH",u_meds:"Medicación",u_coach:"Coach o terapeuta",
+q_price:"Precio de fundador",price_note:"al mes · primer mes gratis · cancela cuando quieras. No se cobra nada ahora.",p_yes:"Me suscribiría",p_maybe:"Quizás",p_exp:"Muy caro",p_no:"No es para mí",q_fair:"¿Qué precio mensual te parecería justo?",
+q_contact:"¿Dónde te enviamos la invitación?",contact_hint:"Email o número de WhatsApp. Te enviaremos la invitación y, al mes, un cuestionario de 1 minuto.",contact_l:"Email o WhatsApp",q_applang:"¿En qué idioma quieres la app?",other:"Otro",
+consent:"Acepto que Sanady guarde mis respuestas y contacto para invitarme y mejorar la app. Algunas respuestas son sobre TDAH. Nunca se venden ni se comparten, y puedo pedir que se borren en cualquier momento respondiendo a la invitación.",send:"Unirme",
+done_h:"Estás en la lista 💛",done_p:"Gracias. Eres de las primeras personas que construyen Sanady con nosotros.",done_next:"Te enviaremos la invitación pronto. Tras un mes de uso, te haremos las mismas 4 preguntas para ver si de verdad ayuda.",share:"Compartir con alguien que lo necesite",try:"Probar la demo gratis",
+a_h:"Un mes con Sanady",a_p:"1 minuto. Tus respuestas sinceras deciden lo que construimos.",a_nps:"¿Qué probabilidad hay de que recomiendes Sanady a un amigo con TDAH?",nps_lo:"Poco probable",nps_hi:"Muy probable",a_keep:"¿Seguirías pagando?",k_no:"No",a_fav:"¿Qué te ayudó más?",f_dump:"Vaciado por voz",f_alarm:"Alarmas",f_one:"Una cosa a la vez",f_agent:"Reorganiza mi día",f_steps:"Pasos pequeños",f_with:"Body double",f_money:"Dinero y facturas",a_better:"¿Qué deberíamos arreglar o añadir?",a_done:"Gracias 💛",a_done_p:"Leemos cada respuesta.",
+err_pick:"Elige una, por favor.",err_adult:"Sanady es para adultos (18+).",err_rate:"Responde las cuatro, por favor.",err_contact:"Añade un email o número de WhatsApp.",err_consent:"Marca la casilla para continuar.",err_net:"No se pudo enviar. Revisa tu conexión.",
+foot:"Sanady es una herramienta de apoyo, no terapia ni consejo médico. Por NRG.",share_txt:"Me uní a la lista de fundadores de Sanady, un compañero de IA por voz para el TDAH:"},
+de:{h1:"Kopf voll? Sag es laut.",lead:"Sanady ist ein sprachgesteuerter KI-Begleiter für Erwachsene mit ADHS. Sag einmal alles, was dir im Kopf herumgeht; Sanady sortiert es, erinnert dich im richtigen Moment und startet mit dir den ersten kleinen Schritt.",
+w1:"<b>Brain-Dump per Stimme.</b> Aufgaben, Termine, Rechnungen und Ideen werden für dich sortiert.",w2:"<b>Wecker, die klingeln</b>, auch wenn die App geschlossen ist.",w3:"<b>Große Aufgaben werden zu einem kleinen Schritt pro Tag.</b>",w4:"<b>Es plant deinen Tag neu, wenn du hinterherhängst</b>, sagt dir, was es geändert hat, und du kannst es rückgängig machen. Ohne Vorwürfe.",w5:"<b>Deine Daten bleiben auf deinem Handy.</b>",
+founding:"Wir öffnen eine kleine Gründungsgruppe mit Sonderpreis und echtem Mitspracherecht.",start:"Auf die Gründerliste",time:"Etwa 2 Minuten · 6 kurze Fragen",next:"Weiter",
+q_who:"Was trifft auf dich zu?",who_d:"Ich habe ADHS (diagnostiziert)",who_s:"Ich glaube, ich habe ADHS",who_c:"Ich bin für einen geliebten Menschen hier",q_country:"Wo lebst du?",adult:"Ich bin 18 oder älter",
+q_hard:"Was fällt dir am schwersten?",pick_any:"Wähle so viele du willst.",h_start:"Aufgaben anfangen",h_forget:"Termine vergessen",h_time:"Zeitgefühl verlieren",h_money:"Rechnungen und Geld",h_big:"Große Projekte beenden",h_home:"Haushalt",h_over:"Zu viele Gedanken auf einmal",h_reply:"Nachrichten beantworten",
+q_rate:"In den letzten 2 Wochen…",rate_hint:"1 = gar nicht · 5 = sehr",r1:"Aufgaben anzufangen war schwer",r2:"Ich habe Termine oder Fristen verpasst",r3:"Mein Kopf war überfordert",r4:"Ich hatte meinen Tag im Griff",
+q_use:"Was hilft dir heute?",u_nothing:"Eigentlich nichts",u_paper:"Papiernotizen",u_rem:"Handy-Erinnerungen",u_cal:"Ein Kalender",u_todo:"Eine To-do-App",u_app:"Eine ADHS-App",u_meds:"Medikamente",u_coach:"Coach oder Therapeut",
+q_price:"Gründerpreis",price_note:"pro Monat · erster Monat gratis · jederzeit kündbar. Jetzt wird nichts berechnet.",p_yes:"Ich würde abonnieren",p_maybe:"Vielleicht",p_exp:"Zu teuer",p_no:"Nichts für mich",q_fair:"Welcher Monatspreis wäre fair?",
+q_contact:"Wohin sollen wir die Einladung schicken?",contact_hint:"E-Mail oder WhatsApp-Nummer. Wir schicken die Einladung und nach einem Monat einen 1-Minuten-Check-in.",contact_l:"E-Mail oder WhatsApp",q_applang:"In welcher Sprache willst du die App?",other:"Andere",
+consent:"Ich bin einverstanden, dass Sanady meine Antworten und meinen Kontakt speichert, um mich einzuladen und die App zu verbessern. Einige Antworten betreffen ADHS. Sie werden nie verkauft oder geteilt, und ich kann jederzeit die Löschung verlangen, indem ich auf die Einladung antworte.",send:"Beitreten",
+done_h:"Du bist auf der Liste 💛",done_p:"Danke. Du gehörst zu den Ersten, die Sanady mit uns gestalten.",done_next:"Wir schicken dir bald deine Einladung. Nach einem Monat stellen wir dieselben 4 Fragen noch einmal, um zu sehen, ob es wirklich hilft.",share:"Mit jemandem teilen, der es braucht",try:"Kostenlose Demo testen",
+a_h:"Ein Monat mit Sanady",a_p:"1 Minute. Deine ehrlichen Antworten bestimmen, was wir als Nächstes bauen.",a_nps:"Wie wahrscheinlich empfiehlst du Sanady einem Freund mit ADHS?",nps_lo:"Unwahrscheinlich",nps_hi:"Sehr wahrscheinlich",a_keep:"Würdest du weiter bezahlen?",k_no:"Nein",a_fav:"Was hat am meisten geholfen?",f_dump:"Brain-Dump per Stimme",f_alarm:"Wecker",f_one:"Eins nach dem anderen",f_agent:"Es plant meinen Tag neu",f_steps:"Kleine Schritte",f_with:"Body Double",f_money:"Geld und Rechnungen",a_better:"Was sollen wir verbessern oder hinzufügen?",a_done:"Danke 💛",a_done_p:"Wir lesen jede Antwort.",
+err_pick:"Bitte wähle eine Option.",err_adult:"Sanady ist für Erwachsene (18+).",err_rate:"Bitte beantworte alle vier.",err_contact:"Bitte E-Mail oder WhatsApp-Nummer angeben.",err_consent:"Bitte das Kästchen ankreuzen.",err_net:"Senden fehlgeschlagen. Prüfe deine Verbindung.",
+foot:"Sanady ist ein Hilfsmittel, keine Therapie oder medizinische Beratung. Von NRG.",share_txt:"Ich bin auf der Gründerliste von Sanady, einem Sprach-KI-Begleiter für ADHS:"}};
+const COUNTRIES=[["EG","Egypt","مصر"],["SA","Saudi Arabia","السعودية"],["AE","United Arab Emirates","الإمارات"],["KW","Kuwait","الكويت"],["QA","Qatar","قطر"],["BH","Bahrain","البحرين"],["OM","Oman","عمان"],["JO","Jordan","الأردن"],["LB","Lebanon","لبنان"],["IQ","Iraq","العراق"],["MA","Morocco","المغرب"],["DZ","Algeria","الجزائر"],["TN","Tunisia","تونس"],["LY","Libya","ليبيا"],["SD","Sudan","السودان"],["PS","Palestine","فلسطين"],["SY","Syria","سوريا"],["YE","Yemen","اليمن"],["US","United States","أمريكا"],["GB","United Kingdom","بريطانيا"],["CA","Canada","كندا"],["AU","Australia","أستراليا"],["IE","Ireland","أيرلندا"],["NZ","New Zealand","نيوزيلندا"],["DE","Germany","ألمانيا"],["FR","France","فرنسا"],["ES","Spain","إسبانيا"],["IT","Italy","إيطاليا"],["NL","Netherlands","هولندا"],["SE","Sweden","السويد"],["MX","Mexico","المكسيك"],["AR","Argentina","الأرجنتين"],["CO","Colombia","كولومبيا"],["BR","Brazil","البرازيل"],["TR","Türkiye","تركيا"],["IN","India","الهند"],["PK","Pakistan","باكستان"],["MY","Malaysia","ماليزيا"],["ID","Indonesia","إندونيسيا"],["NG","Nigeria","نيجيريا"],["ZA","South Africa","جنوب أفريقيا"],["XX","Other","دولة تانية"]];
+const TZC={'Africa/Cairo':'EG','Asia/Riyadh':'SA','Asia/Dubai':'AE','Asia/Kuwait':'KW','Asia/Qatar':'QA','Asia/Bahrain':'BH','Asia/Muscat':'OM','Asia/Amman':'JO','Asia/Beirut':'LB','Asia/Baghdad':'IQ','Africa/Casablanca':'MA','Africa/Algiers':'DZ','Africa/Tunis':'TN','Europe/London':'GB','Europe/Berlin':'DE','Europe/Paris':'FR','Europe/Madrid':'ES','America/New_York':'US','America/Chicago':'US','America/Los_Angeles':'US','America/Denver':'US','America/Toronto':'CA','Australia/Sydney':'AU','America/Mexico_City':'MX'};
+// price test: each visitor sees one of three founding prices for their region; we compare how many say yes at each
+const PRICES={eg:{cur:'EGP',arms:[49,99,149]},gcc:{cur:'USD',arms:[4.99,7.99,11.99]},world:{cur:'USD',arms:[3.99,6.99,9.99]}};
+const GCC=['SA','AE','KW','QA','BH','OM'];
+const $=id=>document.getElementById(id);const st=(k,v)=>{try{if(v===undefined)return localStorage.getItem('sj_'+k);localStorage.setItem('sj_'+k,v)}catch(e){return null}};
+const rid=()=>{const a=crypto.getRandomValues(new Uint8Array(20));return Array.from(a,x=>'abcdefghijkmnpqrstuvwxyz23456789'[x%32]).join('')};
+const q=new URLSearchParams(location.search);const AFTER=q.get('after');
+let L=q.get('lang')||st('lang')||((navigator.language||'en').slice(0,2));if(!T[L])L='en';
+const A={who:'',hard:[],use:[],price_ans:'',applang:'',keep:'',fav:[],r:{},r2:{},nps:null};
+let step=AFTER?10:0;
+const region=c=>c==='EG'?'eg':GCC.includes(c)?'gcc':'world';
+const armFor=r=>{let a=st('arm_'+r);if(a==null){a=String(Math.floor(Math.random()*3));st('arm_'+r,a)}return +a};
+const fmtP=(p,cur)=>cur==='EGP'?(L==='ar'?p+' جنيه':'EGP '+p):'$'+p.toFixed(2);
+function t(k){return (T[L]&&T[L][k])||T.en[k]||''}
+function apply(){document.documentElement.lang=L;document.documentElement.dir=L==='ar'?'rtl':'ltr';$('lang').value=L;
+ document.querySelectorAll('[data-t]').forEach(e=>{const v=t(e.dataset.t);if(/<b>/.test(v))e.innerHTML=v;else e.textContent=v});
+ const c=$('country').value;$('country').innerHTML=COUNTRIES.map(([k,en,ar])=>`<option value="${k}">${L==='ar'?ar:en}</option>`).join('');$('country').value=c||st('country')||TZC[Intl.DateTimeFormat().resolvedOptions().timeZone]||'XX';
+ rates('rates','r');rates('rates2','r2');showPrice();if(!AFTER)document.title='Sanady · ADHD Support — '+t('start')}
+function rates(host,key){const box=$(host);if(!box)return;box.innerHTML=['r1','r2','r3','r4'].map(k=>`<p style="margin:10px 0 4px"><b>${t(k)}</b></p><div class="scale" data-r="${k}">${[1,2,3,4,5].map(v=>`<button type="button" data-v="${v}" class="${A[key][k]===v?'on':''}">${v}</button>`).join('')}</div>`).join('')+`<div class="ends"><span>1</span><span>5</span></div>`;
+ box.querySelectorAll('[data-r]').forEach(g=>g.querySelectorAll('button').forEach(b=>b.onclick=()=>{A[key][g.dataset.r]=+b.dataset.v;g.querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b))}))}
+function showPrice(){const r=region($('country').value),P=PRICES[r],p=P.arms[armFor(r)];$('priceTxt').textContent=fmtP(p,P.cur);$('cur').textContent=P.cur}
+function go(n){step=n;document.querySelectorAll('.step').forEach(s=>s.classList.toggle('on',+s.dataset.s===n));$('prog').style.width=(n>=10?(n===11?100:50):Math.min(100,n/7*100))+'%';window.scrollTo(0,0)}
+function err(id,k){$(id).textContent=k?t(k):''}
+function check(n){
+ if(n===1){if(!A.who)return err('e1','err_pick');if(!$('adult').checked)return err('e1','err_adult');err('e1');st('country',$('country').value);showPrice()}
+ if(n===2){if(!A.hard.length)return err('e2','err_pick');err('e2')}
+ if(n===3){if(Object.keys(A.r).length<4)return err('e3','err_rate');err('e3')}
+ if(n===5){if(!A.price_ans)return err('e5','err_pick');err('e5')}
+ return true}
+document.querySelectorAll('[data-one]').forEach(g=>g.querySelectorAll('.chip').forEach(b=>b.onclick=()=>{A[g.dataset.one]=b.dataset.v;g.querySelectorAll('.chip').forEach(x=>x.classList.toggle('on',x===b))}));
+document.querySelectorAll('[data-many]').forEach(g=>g.querySelectorAll('.chip').forEach(b=>b.onclick=()=>{const a=A[g.dataset.many],v=b.dataset.v,i=a.indexOf(v);if(i<0)a.push(v);else a.splice(i,1);b.classList.toggle('on',i<0)}));
+document.querySelectorAll('[data-next]').forEach(b=>b.onclick=()=>{if(check(step)===true)go(step+1)});
+$('country').onchange=()=>{st('country',$('country').value);showPrice()};
+$('lang').onchange=e=>{L=e.target.value;st('lang',L);apply()};
+const nps=$('nps');nps.innerHTML=[...Array(11)].map((_,i)=>`<button type="button" data-v="${i}">${i}</button>`).join('');nps.querySelectorAll('button').forEach(b=>b.onclick=()=>{A.nps=+b.dataset.v;nps.querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b))});
+async function post(body){const r=await fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(Object.assign({k:'wasl-nrg-2026',hp:$('hp').value},body))});const j=await r.json().catch(()=>null);if(!r.ok||!j||!j.ok)throw new Error((j&&j.why)||'net');return j}
+$('send').onclick=async()=>{const c=$('contact').value.trim();if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(c)&&c.replace(/\D/g,'').length<8)return err('e6','err_contact');if(!$('consent').checked)return err('e6','err_consent');err('e6');
+ const country=$('country').value,r=region(country),P=PRICES[r],arm=armFor(r);let w=st('wid');if(!w){w=rid();st('wid',w)}
+ $('send').disabled=true;try{await post({op:'join',w,consent:true,lang:L,country,region:r,arm:r+':'+P.cur+':'+P.arms[arm],price_ans:A.price_ans,fair:$('fair').value?($('fair').value+' '+P.cur):'',contact:c,src:(q.get('src')||'').slice(0,40),
+  before:{who:A.who,hard:A.hard,use:A.use,r_start:A.r.r1,r_miss:A.r.r2,r_over:A.r.r3,r_control:A.r.r4,applang:A.applang||L}});st('joined','1');go(7)}
+ catch(e){err('e6','err_net')}finally{$('send').disabled=false}};
+$('share').onclick=async()=>{const u='https://nrg1c3.github.io/join/?src=share';const txt=t('share_txt')+' '+u;try{if(navigator.share){await navigator.share({title:'Sanady',text:t('share_txt'),url:u});return}}catch(e){}try{await navigator.clipboard.writeText(txt);$('share').textContent='✓'}catch(e){location.href='https://wa.me/?text='+encodeURIComponent(txt)}};
+$('sendAfter').onclick=async()=>{if(Object.keys(A.r2).length<4)return err('e10','err_rate');if(A.nps==null||!A.keep)return err('e10','err_pick');err('e10');
+ $('sendAfter').disabled=true;try{await post({op:'after',w:AFTER,after:{r_start:A.r2.r1,r_miss:A.r2.r2,r_over:A.r2.r3,r_control:A.r2.r4,nps:A.nps,keep:A.keep,fav:A.fav,better:$('better').value.trim().slice(0,300),lang:L}});go(11)}
+ catch(e){err('e10','err_net')}finally{$('sendAfter').disabled=false}};
+apply();if(AFTER&&!/^[a-z0-9]{16,32}$/.test(AFTER))location.search='';go(step);
+</script>
+</body>
+</html>

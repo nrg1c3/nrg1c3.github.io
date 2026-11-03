@@ -1,0 +1,360 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#102A2E">
+<meta name="robots" content="noindex">
+<title>حضور وانصراف بساطة</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Alexandria:wght@400;600;700&family=IBM+Plex+Sans+Arabic:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#F3F5F3; --card:#FFFFFF; --ink:#102A2E; --teal:#0F5F5A; --in:#138A5E; --out:#B4540A;
+  --muted:#5F6B70; --line:#DCE2E0; --err:#B42318; --errbg:#FDF0EE; --okbg:#E9F5EF;
+  --display:"Alexandria","IBM Plex Sans Arabic",Tahoma,sans-serif; --body:"IBM Plex Sans Arabic",Tahoma,"Segoe UI",sans-serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased;min-height:100vh}
+button,input,select{font:inherit;color:inherit}
+:focus-visible{outline:3px solid #7CC4B8;outline-offset:2px}
+.hidden{display:none!important}
+
+/* hero: the clock */
+.hero{background:var(--ink);color:#fff;padding:18px 20px 64px;padding-top:max(18px,env(safe-area-inset-top))}
+.bar{display:flex;justify-content:space-between;align-items:center;max-width:460px;margin:0 auto;font-size:14px;color:#A9C2C0}
+.brand{font-family:var(--display);font-weight:700;color:#fff;font-size:17px;letter-spacing:0}
+.brand small{font-family:var(--body);font-weight:400;color:#A9C2C0;font-size:13px;margin-inline-start:6px}
+.clockwrap{max-width:460px;margin:22px auto 0;text-align:center}
+#date{font-size:15px;color:#CFE0DE}
+#clock{font-family:var(--display);font-weight:600;font-size:64px;line-height:1.1;direction:ltr;font-variant-numeric:tabular-nums;margin-top:2px}
+#clock .sec{font-size:24px;color:#7FA5A1;font-weight:400;margin-inline-start:4px}
+
+main{max-width:460px;margin:-44px auto 0;padding:0 16px 32px;position:relative}
+.card{background:var(--card);border-radius:20px;padding:22px 20px;box-shadow:0 1px 2px rgba(16,42,46,.06),0 8px 24px rgba(16,42,46,.08)}
+h2{font-family:var(--display);font-weight:600;font-size:20px;margin:0 0 4px}
+.sub{color:var(--muted);font-size:14px;margin:0}
+
+/* sign in */
+.field{margin-top:16px}
+.field label{display:block;font-size:14px;font-weight:500;margin-bottom:6px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{border:1.5px solid var(--line);background:#fff;border-radius:999px;padding:8px 16px;font-size:15px;cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:#fff}
+.chip:disabled{opacity:.4}
+#code{width:100%;border:1.5px solid var(--line);border-radius:14px;padding:12px;font-family:var(--display);font-size:30px;letter-spacing:.5em;text-align:center;direction:ltr;background:#fff}
+#code:focus{border-color:var(--teal);outline:none;box-shadow:0 0 0 3px rgba(15,95,90,.15)}
+.primary{display:block;width:100%;margin-top:20px;border:0;border-radius:14px;background:var(--teal);color:#fff;font-family:var(--display);font-weight:600;font-size:18px;padding:15px;cursor:pointer}
+.primary:disabled{opacity:.5}
+.prefilled{display:flex;justify-content:space-between;align-items:center;background:var(--paper);border-radius:14px;padding:12px 14px;margin-top:16px}
+.prefilled b{font-family:var(--display);font-weight:600}
+.linkbtn{background:none;border:0;color:var(--teal);font-size:14px;cursor:pointer;padding:4px;text-decoration:underline;text-underline-offset:3px}
+
+/* punch */
+.who{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.state{display:inline-block;margin-top:8px;border-radius:999px;padding:4px 12px;font-size:14px;font-weight:500;background:var(--paper);color:var(--muted)}
+.state.on{background:var(--okbg);color:var(--in)}
+.seg{display:grid;grid-template-columns:1fr 1fr;background:var(--paper);border-radius:14px;padding:4px;margin-top:18px;gap:4px}
+.seg button{flex:1;border:0;background:none;border-radius:10px;padding:9px 4px;font-size:14px;line-height:1.35;cursor:pointer;color:var(--muted)}
+.seg button small{display:block;font-size:11.5px;direction:rtl;white-space:nowrap}
+.seg button{white-space:nowrap;padding:9px 2px}
+.seg button[aria-pressed="true"]{background:#fff;color:var(--ink);font-weight:600;box-shadow:0 1px 3px rgba(16,42,46,.12)}
+.punchwrap{display:flex;justify-content:center;margin:26px 0 8px}
+.ring{width:236px;height:236px;border-radius:50%;padding:8px;background:conic-gradient(var(--ringc,var(--in)) calc(var(--p,0)*1%),#E6EBEA 0)}
+#punch{width:100%;height:100%;border-radius:50%;border:6px solid #fff;cursor:pointer;color:#fff;background:var(--in);font-family:var(--display);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;box-shadow:inset 0 -6px 0 rgba(0,0,0,.12);transition:transform .12s}
+#punch:active{transform:scale(.97)}
+#punch:disabled{opacity:.6;cursor:default}
+#punch .big{font-size:30px;font-weight:700}
+#punch .small{font-family:var(--body);font-size:14px;opacity:.85}
+#punch.out{background:var(--out)}
+.ring.out{--ringc:var(--out)}
+.window{text-align:center;color:var(--muted);font-size:14px;margin:0}
+.alt{display:block;margin:6px auto 0}
+
+.msg{border-radius:14px;padding:12px 14px;margin-top:16px;font-size:15px}
+.msg.err{background:var(--errbg);color:var(--err)}
+.msg.ok{background:var(--okbg);color:#0B5E40}
+.msg:empty{display:none}
+
+.today{margin-top:20px;border-top:1px solid var(--line);padding-top:14px}
+.today h3{font-size:14px;font-weight:600;margin:0 0 8px;color:var(--muted)}
+.rec{display:grid;grid-template-columns:1fr auto auto;gap:4px 14px;align-items:baseline;padding:8px 0;font-size:15px}
+.rec + .rec{border-top:1px dashed var(--line)}
+.rec .t{font-family:var(--display);direction:ltr;font-variant-numeric:tabular-nums}
+.rec .t span{display:block;font-family:var(--body);font-size:12px;color:var(--muted);direction:rtl;text-align:center}
+.rec .flag{grid-column:1/-1;font-size:13px;color:var(--out)}
+
+.save{background:#FFF7EC;border:1px solid #F3D3A8;border-radius:14px;padding:14px;margin-top:16px;font-size:15px}
+.save a{display:block;margin-top:10px;text-align:center;background:var(--ink);color:#fff;text-decoration:none;border-radius:12px;padding:11px;font-family:var(--display);font-weight:600}
+.foot{text-align:center;color:var(--muted);font-size:13px;margin:16px 0 0}
+.testbanner{background:#EAF2FF;color:#1D4ED8;border-radius:12px;padding:10px 12px;font-size:14px;margin-bottom:14px}
+
+/* the one orchestrated moment: confirmation */
+.done{position:fixed;inset:0;background:rgba(16,42,46,.94);color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px;z-index:9}
+.done svg{width:96px;height:96px}
+.done circle{stroke:#5FD3A4;stroke-width:5;fill:none;stroke-dasharray:283;stroke-dashoffset:283;animation:draw .5s ease-out forwards}
+.done path{stroke:#fff;stroke-width:6;fill:none;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:60;stroke-dashoffset:60;animation:draw .35s .4s ease-out forwards}
+.done.out circle{stroke:#F2A65A}
+.done h2{font-size:26px;margin:18px 0 4px}
+.done p{color:#CFE0DE;margin:0;max-width:300px}
+.done button{margin-top:26px;background:#fff;color:var(--ink);border:0;border-radius:12px;padding:12px 28px;font-family:var(--display);font-weight:600;font-size:16px;cursor:pointer}
+@keyframes draw{to{stroke-dashoffset:0}}
+@media (prefers-reduced-motion:reduce){.done circle,.done path{animation:none;stroke-dashoffset:0}#punch{transition:none}}
+
+#admin select{width:100%;border:1.5px solid var(--line);border-radius:14px;padding:12px;background:#fff;font-size:16px}
+</style>
+</head>
+<body>
+<header class="hero">
+  <div class="bar"><span class="brand">بساطة<small>حضور وانصراف</small></span><span id="branchTag"></span></div>
+  <div class="clockwrap"><div id="date"></div><div id="clock">--:--</div></div>
+</header>
+<main>
+<section id="who" class="card">
+  <div id="testBanner" class="testbanner hidden">ده حساب تجربة. الكود 1234، وبيشتغل من أي مكان. التسجيل هنا مش بيتكتب في شيت المرتبات.</div>
+  <h2>سجّل دخولك</h2>
+  <p class="sub">بالكود الشخصي بتاعك</p>
+  <div id="pickBox">
+    <div class="field"><label>الفرع</label><div class="chips" id="branchChips"></div></div>
+    <div class="field"><label>اسمك</label><div class="chips" id="empChips"><span class="sub">اختار الفرع الأول</span></div></div>
+  </div>
+  <div id="knownBox" class="prefilled hidden"><span><b id="knownName"></b> <span class="sub" id="knownBranch"></span></span><button class="linkbtn" id="changeBtn" type="button">مش أنا</button></div>
+  <div class="field"><label for="code">الكود</label><input id="code" type="password" inputmode="numeric" autocomplete="off" maxlength="8"></div>
+  <button class="primary" id="enterBtn" type="button">دخول</button>
+  <div id="whoMsg" class="msg" role="alert"></div>
+</section>
+
+<section id="act" class="card hidden">
+  <div class="who">
+    <div><h2 id="hello"></h2><span id="state" class="state"></span></div>
+    <button class="linkbtn" id="switchBtn" type="button">خروج</button>
+  </div>
+  <div id="seg" class="seg" role="group" aria-label="الشفت"></div>
+  <div class="punchwrap"><div class="ring" id="ring"><button id="punch" type="button"><span class="big" id="punchBig">حضور</span><span class="small" id="punchSmall"></span></button></div></div>
+  <p class="window" id="window"></p>
+  <button class="linkbtn alt" id="altBtn" type="button"></button>
+  <div id="actMsg" class="msg" role="alert"></div>
+  <div id="linkBox" class="save hidden"><b>خطوة مرة واحدة بس:</b> افتح اللينك الخاص بيك واحفظه على الشاشة الرئيسية (آيفون: زرار المشاركة ⬆️ — أندرويد: ⋮ — ثم «إضافة إلى الشاشة الرئيسية»). بعد كده سجّل من الاختصار ده بس.<a id="myLink" href="#">افتح اللينك الخاص بيك</a></div>
+  <div class="today" id="todayBox"><h3>تسجيلاتك النهارده</h3><div id="recs"></div></div>
+</section>
+
+<section id="locked" class="card hidden">
+  <h2>اللينك ده مقفول</h2>
+  <p class="sub" style="margin-top:6px">افتح الحضور من الأيقونة اللي على الشاشة الرئيسية لموبايلك (اللينك الخاص بيك)، وهيطلب منك الكود بتاعك إنت بس. لو لسه ما عندكش الأيقونة كلّم الإدارة.</p>
+  <button class="linkbtn alt" id="toAdmin" type="button">للإدارة فقط: تفعيل الموبايل ده</button>
+</section>
+
+<section id="admin" class="card hidden">
+  <h2>تفعيل موبايل موظف</h2>
+  <p class="sub">افتح الصفحة دي على موبايل الموظف نفسه، اختار اسمه واكتب كود الإدارة. لو كان له موبايل قديم، القديم بيتقفل لوحده.</p>
+  <div class="field"><label for="admEmp">الموظف</label><select id="admEmp"></select></div>
+  <div class="field"><label for="admCode">كود الإدارة</label><input id="admCode" type="password" inputmode="numeric" autocomplete="off" style="width:100%;border:1.5px solid var(--line);border-radius:14px;padding:12px;font-size:18px"></div>
+  <button class="primary" id="actBtn" type="button">فعّل الموبايل ده</button>
+  <div id="admMsg" class="msg" role="alert"></div>
+  <div id="actLink" class="save hidden"><b>تم.</b> الصفحة هترجع لصفحة الدخول، والموظف يدخل بالكود بتاعه من نفس اللينك. الموبايل ده بس هو اللي هيتقبل منه.<a id="actHref" href="#">ارجع لصفحة الدخول</a></div>
+  <button class="linkbtn alt" id="admBtn" type="button">فك ربط موبايل الموظف ده بس (من غير تفعيل)</button>
+</section>
+<p class="foot">لازم تكون جوه الفرع والـ GPS مفتوح.</p>
+</main>
+
+<div id="done" class="done hidden" role="dialog" aria-live="assertive">
+  <svg viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="45"/><path d="M30 52 l14 14 l26 -30"/></svg>
+  <h2 id="doneTitle"></h2><p id="doneText"></p>
+  <button id="doneBtn" type="button">تمام</button>
+</div>
+
+<script>
+(function(){
+var API = "https://api.nrg-egypt.com/webhook/basata-attendance-api";
+var EMP = {"المقطم":["ملك","يوسف"],"حلوان":["فاطمة","ليلى"],"صفط اللبن":["مروة","آية"],"طنطا":["مهند","نهلة"],"تسويق خارجي":["مؤمن"]};
+var SH = {morning:["صباحي","9 ص – 5 م",9,17],night:["مسائي 2–10","2 م – 10 م",14,22],night2:["مسائي 3–11","3 م – 11 م",15,23],full:["شفت كامل","9 ص – 10 م",9,22],friday:["شفت الجمعة","3 م – 11 م",15,23],flex:["دوام 8 ساعات","من وقت حضورك",null,null]};
+var $ = function(id){ return document.getElementById(id); };
+var TEST = /[?&]test/.test(location.search);
+if(TEST){ EMP = {"تجربة":["تجربة"]}; }
+// The page runs in a sandbox without storage, so the phone is identified by a personal link (?d=...) the employee saves on the phone
+var Q = {}; location.search.replace(/^\?/,"").split("&").forEach(function(kv){ if(!kv) return; var i = kv.indexOf("="); Q[decodeURIComponent(i<0?kv:kv.slice(0,i))] = i<0 ? "" : decodeURIComponent(kv.slice(i+1)); });
+function sget(k){ try { return localStorage.getItem(k) || ""; } catch(e){ return ""; } }
+function sset(k,v){ try { localStorage.setItem(k, v); } catch(e){} }
+var SAVED = /^[A-Za-z0-9-]{16,64}$/.test(sget("basata_dev")) ? sget("basata_dev") : "";
+var TOKEN = /^[A-Za-z0-9-]{16,64}$/.test(Q.d||"") ? Q.d : SAVED ? SAVED : ((window.crypto && crypto.randomUUID) ? crypto.randomUUID() : ("d" + Date.now().toString(36) + Math.random().toString(36).slice(2) + Math.random().toString(36).slice(2))).replace(/[^A-Za-z0-9-]/g,"").slice(0,64);
+var HAS_LINK = TOKEN === Q.d;
+sset("basata_dev", TOKEN);
+function fp(){ var s = window.screen || {}; var w = Math.min(s.width||0, s.height||0), h = Math.max(s.width||0, s.height||0); var os = (/iPhone|iPad/.test(navigator.userAgent) || (/Macintosh/.test(navigator.userAgent) && navigator.maxTouchPoints > 1)) ? "ios" : (/Android/.test(navigator.userAgent) ? "android" : "other"); return os + "-" + w + "x" + h + "@" + (window.devicePixelRatio||1); }
+function myLink(b, e){ return location.origin + location.pathname + "?d=" + encodeURIComponent(TOKEN) + "&b=" + encodeURIComponent(b) + "&e=" + encodeURIComponent(e); }
+var sel = {branch:"", employee:""}, me = null, st = null, shift = "", busy = false;
+function msg(el,t,k){ el.textContent = t || ""; el.className = "msg " + (k||"err"); }
+function api(p){
+  p.device = TOKEN; p.fp = fp();
+  return fetch(API,{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify(p)})
+  .then(function(r){ return r.text(); }).then(function(t){ try { return JSON.parse(t); } catch(e){ return {ok:false,error:"السيرفر رد برد مش مفهوم. جرّب تاني."}; } });
+}
+function cairoNow(){ try { return new Date(new Date().toLocaleString("en-US",{timeZone:"Africa/Cairo"})); } catch(e){ return new Date(); } }
+var DAYS = ["الأحد","الاثنين","الثلاثاء","الأربعاء","الخميس","الجمعة","السبت"];
+var MONTHS = ["يناير","فبراير","مارس","أبريل","مايو","يونيو","يوليو","أغسطس","سبتمبر","أكتوبر","نوفمبر","ديسمبر"];
+function p2(n){ return String(n).padStart(2,"0"); }
+function tick(){
+  var n = cairoNow();
+  $("clock").innerHTML = p2(n.getHours()) + ":" + p2(n.getMinutes()) + '<span class="sec">' + p2(n.getSeconds()) + "</span>";
+  $("date").textContent = DAYS[n.getDay()] + " " + n.getDate() + " " + MONTHS[n.getMonth()];
+  if(me) drawRing();
+}
+tick(); setInterval(tick, 1000);
+
+// ---- sign in
+function chips(box, list, cur, onPick){
+  box.innerHTML = "";
+  list.forEach(function(v){ var b = document.createElement("button"); b.type = "button"; b.className = "chip"; b.textContent = v; b.setAttribute("aria-pressed", v === cur ? "true" : "false"); b.onclick = function(){ onPick(v); }; box.appendChild(b); });
+}
+function drawPick(){
+  chips($("branchChips"), Object.keys(EMP), sel.branch, function(v){ sel.branch = v; sel.employee = EMP[v].length === 1 ? EMP[v][0] : ""; drawPick(); });
+  if(sel.branch) chips($("empChips"), EMP[sel.branch], sel.employee, function(v){ sel.employee = v; drawPick(); $("code").focus(); });
+}
+function showKnown(){
+  $("pickBox").classList.add("hidden"); $("knownBox").classList.remove("hidden");
+  $("knownName").textContent = sel.employee; $("knownBranch").textContent = "— " + sel.branch;
+}
+$("changeBtn").onclick = function(){ sel = {branch:"",employee:""}; $("knownBox").classList.add("hidden"); $("pickBox").classList.remove("hidden"); drawPick(); };
+function enter(){
+  var c = $("code").value.trim();
+  if(!sel.branch || !sel.employee){ msg($("whoMsg"),"اختار الفرع واسمك."); return; }
+  if(!c){ msg($("whoMsg"),"اكتب الكود بتاعك."); $("code").focus(); return; }
+  $("enterBtn").disabled = true; msg($("whoMsg"),"");
+  api({action:"status", branch:sel.branch, employee:sel.employee, code:c}).then(function(r){
+    $("enterBtn").disabled = false;
+    if(!r.ok){ msg($("whoMsg"), r.error || "الدخول ما نجحش. جرّب تاني."); return; }
+    me = {branch:sel.branch, employee:sel.employee, code:c};
+    sset("basata_b", sel.branch); sset("basata_e", sel.employee);
+    $("who").classList.add("hidden"); $("act").classList.remove("hidden");
+    $("branchTag").textContent = sel.branch;
+    showStatus(r);
+  }).catch(function(){ $("enterBtn").disabled = false; msg($("whoMsg"),"مفيش اتصال بالنت. اتأكد من الإنترنت وجرّب تاني."); });
+}
+$("enterBtn").onclick = enter;
+$("code").addEventListener("keydown", function(e){ if(e.key === "Enter") enter(); });
+$("switchBtn").onclick = function(){ me = null; st = null; $("code").value = ""; $("branchTag").textContent = ""; $("act").classList.add("hidden"); $("who").classList.remove("hidden"); };
+
+// ---- punch screen
+var NIGHT_ONLY = {"مهند": 1};
+function keysFor(){
+  var n = cairoNow();
+  if(me && EMP[me.branch] && me.branch === "تسويق خارجي") return ["flex"];
+  if(n.getDay() === 5) return ["friday"];
+  if(me && NIGHT_ONLY[me.employee]) return ["night"];
+  if(n.getDay() === 4) return ["morning","night","full"];
+  return ["morning","night","night2","full"];
+}
+function shiftInfo(k){
+  var s = SH[k].slice(), thu = cairoNow().getDay() === 4;
+  if(thu && k === "night"){ s[0] = "مسائي 3–11"; s[1] = "3 م – 11 م"; s[2] = 15; s[3] = 23; }
+  if(thu && k === "full"){ s[1] = "9 ص – 11 م"; s[3] = 23; }
+  if(k === "night" && me && NIGHT_ONLY[me.employee]){ s[0] = "مسائي 3–11"; s[1] = "3 م – 11 م"; s[2] = 15; s[3] = 23; }
+  return s;
+}
+var KEY_OF = {"صباحي":"morning","مسائي":"night","مسائي (3-11)":"night2","شفت كامل":"full","شفت الجمعة":"friday","دوام 8 ساعات":"flex"};
+function openRec(){ return st && (st.records||[]).filter(function(x){ return x.in_at && !x.out_at; })[0]; }
+function drawSeg(){
+  var box = $("seg"), keys = keysFor(), open = openRec();
+  box.innerHTML = "";
+  if(open || keys.length === 1){ box.classList.add("hidden"); }
+  else box.classList.remove("hidden");
+  if(!shift || keys.indexOf(shift) < 0) shift = keys.length === 1 ? keys[0] : (cairoNow().getHours() < 13 ? "morning" : "night");
+  keys.forEach(function(k){ var s = shiftInfo(k), b = document.createElement("button"); b.type = "button"; b.setAttribute("aria-pressed", k === shift ? "true" : "false"); b.innerHTML = s[0] + "<small>" + s[1] + "</small>"; b.onclick = function(){ shift = k; drawSeg(); drawPunch(); }; box.appendChild(b); });
+}
+function drawRing(){
+  var open = openRec(), ring = $("ring"), pct = 0;
+  if(open){
+    var n = cairoNow(), k = KEY_OF[open.shift] || shift, s = shiftInfo(k), parts = open.in_at.split(":");
+    var inMin = (+parts[0])*60 + (+parts[1]), nowMin = n.getHours()*60 + n.getMinutes();
+    var startMin = s[2] != null ? s[2]*60 : inMin, endMin = s[3] != null ? s[3]*60 : inMin + 480;
+    pct = Math.max(0, Math.min(100, (nowMin - startMin) / (endMin - startMin) * 100));
+  }
+  ring.style.setProperty("--p", pct.toFixed(1));
+}
+function drawPunch(){
+  var open = openRec(), b = $("punch"), ring = $("ring");
+  var k = open ? (KEY_OF[open.shift] || shift) : shift, s = shiftInfo(k);
+  b.className = open ? "out" : ""; ring.className = "ring" + (open ? " out" : "");
+  $("punchBig").textContent = open ? "انصراف" : "حضور";
+  $("punchSmall").textContent = open ? "دوس لما تخلص" : "دوس لما توصل";
+  $("state").textContent = open ? "في الشفت من " + open.in_at : "مش مسجل حضور دلوقتي";
+  $("state").className = "state" + (open ? " on" : "");
+  $("window").textContent = s[0] + " — " + s[1];
+  $("altBtn").textContent = open ? "" : "نسيت تسجل حضور؟ سجّل انصراف بس";
+  $("altBtn").classList.toggle("hidden", !!open);
+  drawRing();
+}
+function showStatus(r){
+  st = r;
+  $("hello").textContent = "أهلًا " + r.employee;
+  drawSeg(); drawPunch();
+  var recs = r.records || [];
+  $("todayBox").classList.toggle("hidden", !recs.length);
+  $("recs").innerHTML = recs.map(function(x){
+    var flags = [];
+    if(x.late_min) flags.push("متأخر " + x.late_min + " دقيقة");
+    if(x.early_min) flags.push("مشي بدري " + x.early_min + " دقيقة");
+    return '<div class="rec"><span>' + x.shift + (x.hours ? ' <span class="sub">' + x.hours + ' ساعة</span>' : '') + '</span>' +
+      '<span class="t">' + (x.in_at || "—") + '<span>حضور</span></span><span class="t">' + (x.out_at || "—") + '<span>انصراف</span></span>' +
+      (flags.length ? '<span class="flag">' + flags.join("، ") + '</span>' : '') + '</div>';
+  }).join("");
+}
+function done(action, text){
+  $("done").className = "done" + (action === "out" ? " out" : "");
+  $("doneTitle").textContent = action === "out" ? "اتسجل انصرافك" : "اتسجل حضورك";
+  $("doneText").textContent = text;
+  $("doneBtn").focus();
+}
+$("doneBtn").onclick = function(){ $("done").className = "done hidden"; };
+function mark(action){
+  if(busy) return;
+  var m = $("actMsg"); msg(m,"");
+  if(!navigator.geolocation){ msg(m,"الموبايل ده مش بيدعم تحديد الموقع. سجّل من موبايل تاني فيه GPS."); return; }
+  busy = true; $("punch").disabled = true; $("punchSmall").textContent = "بنحدد موقعك…";
+  navigator.geolocation.getCurrentPosition(function(pos){
+    api({action:action, branch:me.branch, employee:me.employee, code:me.code, shift:shift, lat:pos.coords.latitude, lng:pos.coords.longitude, acc:Math.round(pos.coords.accuracy||0)}).then(function(r){
+      busy = false; $("punch").disabled = false;
+      if(!r.ok){ msg(m, r.error || "التسجيل ما نجحش. جرّب تاني."); drawPunch(); return; }
+      done(action, String(r.message||"").replace(/^[^؀-ۿ]+/,"").replace(/^تم تسجيل (حضورك|انصرافك) /,""));
+      if(r.records){ st.records = r.records; showStatus(st); } else api({action:"status", branch:me.branch, employee:me.employee, code:me.code}).then(function(s){ if(s.ok) showStatus(s); });
+    }).catch(function(){ busy = false; $("punch").disabled = false; drawPunch(); msg(m,"مفيش اتصال بالنت. جرّب تاني."); });
+  }, function(err){
+    busy = false; $("punch").disabled = false; drawPunch();
+    msg(m, err.code === 1 ? "الصفحة محتاجة إذن الموقع. افتح إعدادات المتصفح، اسمح بالموقع للصفحة دي، وافتح الـ GPS." : "الموقع ما اتحددش. افتح الـ GPS، استنى ثواني، وجرّب تاني.");
+  }, {enableHighAccuracy:true, timeout:20000, maximumAge:0});
+}
+$("punch").onclick = function(){ mark(openRec() ? "out" : "in"); };
+$("altBtn").onclick = function(){ mark("out"); };
+
+// ---- admin: activate this phone for an employee, or free an employee's phone
+function showAdmin(){
+  $("who").classList.add("hidden"); $("locked").classList.add("hidden"); $("admin").classList.remove("hidden");
+  $("admEmp").innerHTML = '<option value="">اختار</option>' + Object.keys(EMP).map(function(b){ return EMP[b].map(function(n){ return '<option value="' + n + '" data-b="' + b + '">' + n + " — " + b + "</option>"; }).join(""); }).join("");
+  $("actBtn").onclick = function(){
+    var e = $("admEmp").value, c = $("admCode").value.trim(); $("actLink").classList.add("hidden");
+    if(!e || !c){ msg($("admMsg"),"اختار الموظف واكتب كود الإدارة."); return; }
+    $("actBtn").disabled = true;
+    api({action:"activate", employee:e, admin:c}).then(function(r){
+      $("actBtn").disabled = false;
+      if(!r.ok){ msg($("admMsg"), r.error || "التفعيل ما نجحش."); return; }
+      msg($("admMsg"), r.message, "ok");
+      $("actHref").href = location.origin + location.pathname; $("actLink").classList.remove("hidden");
+      setTimeout(function(){ location.replace(location.origin + location.pathname); }, 2000);
+    }).catch(function(){ $("actBtn").disabled = false; msg($("admMsg"),"مفيش اتصال بالنت. جرّب تاني."); });
+  };
+  $("admBtn").onclick = function(){
+    var e = $("admEmp").value, c = $("admCode").value.trim(); if(!e || !c){ msg($("admMsg"),"اختار الموظف واكتب كود الإدارة."); return; }
+    api({action:"reset", employee:e, admin:c}).then(function(r){ msg($("admMsg"), r.ok ? r.message : (r.error || "فك الربط ما نجحش."), r.ok ? "ok" : "err"); });
+  };
+}
+$("toAdmin").onclick = showAdmin;
+if(/[?&]admin/.test(location.search)){ showAdmin(); return; }
+if(TEST){ $("testBanner").classList.remove("hidden"); sel = {branch:"تجربة", employee:"تجربة"}; showKnown(); }
+else if(Q.b && EMP[Q.b] && EMP[Q.b].indexOf(Q.e) >= 0){ sel = {branch:Q.b, employee:Q.e}; showKnown(); }
+else { var sb = sget("basata_b"), se = sget("basata_e"); if(sb && EMP[sb] && EMP[sb].indexOf(se) >= 0){ sel = {branch:sb, employee:se}; showKnown(); } }
+drawPick();
+})();
+</script>
+</body>
+</html>

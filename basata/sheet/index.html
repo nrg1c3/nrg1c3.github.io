@@ -233,7 +233,7 @@ table.sheet{border-collapse:separate;border-spacing:0;min-width:760px;width:100%
 <h2>الصور والرفع</h2>
 <p class="lead">صوّر كل صفحة لوحدها بالكاميرا. لو في أكتر من صفحة، اختار التانية وهتتضاف تحت الأولى (لحد 4 صور).</p>
 <div id="receiptBox" class="upload">
-<label for="receipt" style="font-size:14px;margin-bottom:8px"><strong>Machine Report — صورة تقرير المكنة (اليوم كله)</strong></label>
+<label for="receipt" style="font-size:14px;margin-bottom:8px"><strong id="receiptLabel">Machine Report — صورة تقرير المكنة (اليوم كله)</strong></label>
 <input id="receipt" type="file" accept="image/*" multiple>
 <img id="receiptPreview" class="hidden" alt="" style="max-width:220px;max-height:220px;margin:10px 0;border:1px solid var(--line);border-radius:10px">
 <p id="receiptHint" style="font-size:12px;color:var(--muted);margin:6px 0 0">التحويلات الواردة + المدفوعات في التقرير لازم تساوي Total Sales بتاع اليوم كله (+ Received Balance لو موجود)، والتحويلات الصادرة لازم تساوي Cash Center + Another Machine Transfer + Return.</p>
@@ -267,6 +267,7 @@ var COLS = 8, DENOMS = [200,100,50,20,10,5,1];
 var ctx = null, saveTimer = null, busy = false, armed = false, receiptB64 = "", sheetB64 = "", adminCode = "", openEditable = false, adminMode = false, adminEdit = false, sheetUrl = "";
 function disarm(){ if(!armed) return; armed = false; var b = document.getElementById("submitBtn"); b.textContent = adminEdit ? "حفظ التعديلات في الشيت" : "تقفيل ورفع الشفت"; b.className = "primary"; var w = document.getElementById("workMsg"); w.className = "msg"; }
 var $ = function(id){ return document.getElementById(id); };
+var TWO_MACHINES = ["طنطا"];
 var BRANCHES = ["المقطم","حلوان","صفط اللبن","طنطا"];
 function branchOpts(own){ return '<option value="">Select — اختار الفرع</option>' + BRANCHES.filter(function(b){ return b!==own; }).map(function(b){ return '<option>'+b+'</option>'; }).join(""); }
 var EMPLOYEES = {"المقطم":["ملك","يوسف"],"حلوان":["فاطمة","ليلى"],"صفط اللبن":["مروة","آية"],"طنطا":["مهند","نهلة"]};
@@ -463,8 +464,10 @@ note.push("Another Machine Transfer = تحويل رصيد (لكاش أو لفر�
 if(day.handover && ((day.handover.drawer||[]).some(function(v){return v;}) || (day.handover.safe||[]).some(function(v){return v;}))){ var h = day.handover; note.push("الكاش متسلم من " + h.employee + " (" + shiftName(h.shift) + (h.submitted?"":"، لسه مقفلش") + "). اعدّ الفلوس وعدّل لو في اختلاف."); }
 $("dayNote").textContent = note.join(" ");
 $("amBranch").innerHTML = branchOpts(b) + '<option value="other">Other — مكنة تانية</option>'; $("recFrom").innerHTML = branchOpts(b); $("retBranch").innerHTML = branchOpts(b); $("cashFrom").innerHTML = branchOpts(b); $("retCashBranch").innerHTML = branchOpts(b);
-var npDay = ["2026-11-01","2026-11-02","2026-11-03"].indexOf(d) >= 0;
-$("receiptBox").classList.toggle("hidden", sh==="morning" || npDay); $("sheetBox").classList.toggle("hidden", npDay);
+var npDay = ["2026-11-01","2026-11-02","2026-11-03"].indexOf(d) >= 0, twoM = TWO_MACHINES.indexOf(b) >= 0;
+$("receiptBox").classList.toggle("hidden", (sh==="morning" && !twoM) || npDay);
+$("receiptLabel").textContent = twoM ? "Machine Report — صورة تقرير المكنة بتاعة الشفت ده" : "Machine Report — صورة تقرير المكنة (اليوم كله)";
+$("receiptHint").textContent = twoM ? "الفرع ده شغال على مكنتين: صوّر تقرير مكنتك عن الشفت بتاعك بس. التحويلات الواردة + المدفوعات لازم تساوي Sales بتاع الشفت ده (+ Received Balance لو موجود)، والصادرة لازم تساوي Cash Center + Another Machine Transfer + Return." : "التحويلات الواردة + المدفوعات في التقرير لازم تساوي Total Sales بتاع اليوم كله (+ Received Balance لو موجود)، والتحويلات الصادرة لازم تساوي Cash Center + Another Machine Transfer + Return."; $("sheetBox").classList.toggle("hidden", npDay);
 if(sh==="morning"){
 $("sheetLabel").textContent = "Custody Sheet — صورة صفحة 1 من محضر العهدة (الفترة الصباحية + المسائية)";
 $("sheetHint").textContent = "الفترة المسائية (التسليم للشفت المسائي): عدد كل فئة لازم يطابق جدول الفلوس آخر الشفت، والرصيد لازم يطابق Money in Machine في الفورم.";
@@ -567,7 +570,7 @@ if($("received").value.trim() && !$("recFrom").value){ msg(w,"اختار الف�
 if($("retCash").value.trim() && !$("retCashBranch").value){ msg(w,"اختار الفرع اللي رجّعتله الكاش (Cash Return To)."); return; }
 if($("recCash").value.trim() && !$("cashFrom").value){ msg(w,"اختار الفرع اللي استلمت منه الكاش (Cash From)."); return; }
 var noPhoto = ["2026-11-01","2026-11-02","2026-11-03"].indexOf(ctx.date) >= 0;
-if(!adminEdit && !noPhoto && ctx.shift!=="morning" && !receiptB64){ msg(w,"ارفع صورة تقرير المكنة الأول."); return; }
+if(!adminEdit && !noPhoto && (ctx.shift!=="morning" || TWO_MACHINES.indexOf(ctx.branch) >= 0) && !receiptB64){ msg(w,"ارفع صورة تقرير المكنة الأول."); return; }
 if(!adminEdit && !noPhoto && !sheetB64){ msg(w, ctx.shift==="morning" ? "ارفع صورة صفحة 1 من محضر العهدة الأول." : "ارفع صورة صفحة الغلق من محضر العهدة الأول."); return; }
 if(!armed){
 armed = true;
@@ -577,7 +580,7 @@ msg(w, adminEdit ? ("هتكتبي التعديلات على شيت " + ctx.branc
 return;
 }
 busy = true; $("submitBtn").disabled = true; clearTimeout(saveTimer); saveTimer = null; dirty = false;
-if(ctx.shift!=="morning" && receiptB64) data.receipt = receiptB64; if(sheetB64) data.custody_sheet = sheetB64;
+if(receiptB64) data.receipt = receiptB64; if(sheetB64) data.custody_sheet = sheetB64;
 $("submitBtn").textContent = (adminEdit || noPhoto) ? "بيتحفظ في الشيت..." : "بيتأكد من الصور...";
 api(Object.assign({action:"submit", data:data}, ctx)).then(function(r){
 busy = false; $("submitBtn").disabled = false;

@@ -56,6 +56,7 @@ h2{font-family:var(--display);font-weight:600;font-size:20px;margin:0 0 4px}
 .who{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
 .state{display:inline-block;margin-top:8px;border-radius:999px;padding:4px 12px;font-size:14px;font-weight:500;background:var(--paper);color:var(--muted)}
 .state.on{background:var(--okbg);color:var(--in)}
+.seg button:last-child:nth-child(odd){grid-column:1/-1}
 .seg{display:grid;grid-template-columns:1fr 1fr;background:var(--paper);border-radius:14px;padding:4px;margin-top:18px;gap:4px}
 .seg button{flex:1;border:0;background:none;border-radius:10px;padding:9px 4px;font-size:14px;line-height:1.35;cursor:pointer;color:var(--muted)}
 .seg button small{display:block;font-size:11.5px;direction:rtl;white-space:nowrap}
@@ -169,7 +170,7 @@ h2{font-family:var(--display);font-weight:600;font-size:20px;margin:0 0 4px}
 (function(){
 var API = "https://api.nrg-egypt.com/webhook/basata-attendance-api";
 var EMP = {"المقطم":["ملك","يوسف"],"حلوان":["فاطمة","ليلى"],"صفط اللبن":["مروة","آية"],"طنطا":["مهند","نهلة"],"تسويق خارجي":["مؤمن"]};
-var SH = {morning:["صباحي","9 ص – 5 م",9,17],night:["مسائي 2–10","2 م – 10 م",14,22],night2:["مسائي 3–11","3 م – 11 م",15,23],full:["شفت كامل","9 ص – 10 م",9,22],friday:["شفت الجمعة","3 م – 11 م",15,23],flex:["دوام 8 ساعات","من وقت حضورك",null,null]};
+var SH = {morning:["صباحي","9 ص – 5 م",9,17],night:["مسائي 2–10","2 م – 10 م",14,22],night2:["مسائي 3–11","3 م – 11 م",15,23],full:["كامل 9–10","9 ص – 10 م",9,22],full2:["كامل 9–11","9 ص – 11 م",9,23],friday:["شفت الجمعة","3 م – 11 م",15,23],flex:["دوام 8 ساعات","من وقت حضورك",null,null]};
 var $ = function(id){ return document.getElementById(id); };
 var TEST = /[?&]test/.test(location.search);
 if(TEST){ EMP = {"تجربة":["تجربة"]}; }
@@ -243,16 +244,16 @@ function keysFor(){
   if(n.getDay() === 5) return ["friday"];
   if(me && NIGHT_ONLY[me.employee]) return ["night"];
   if(n.getDay() === 4) return ["morning","night","full"];
-  return ["morning","night","night2","full"];
+  return ["morning","night","night2","full","full2"];
 }
 function shiftInfo(k){
   var s = SH[k].slice(), thu = cairoNow().getDay() === 4;
   if(thu && k === "night"){ s[0] = "مسائي 3–11"; s[1] = "3 م – 11 م"; s[2] = 15; s[3] = 23; }
-  if(thu && k === "full"){ s[1] = "9 ص – 11 م"; s[3] = 23; }
+  if(thu && k === "full"){ s[0] = "شفت كامل"; s[1] = "9 ص – 11 م"; s[3] = 23; }
   if(k === "night" && me && NIGHT_ONLY[me.employee]){ s[0] = "مسائي 3–11"; s[1] = "3 م – 11 م"; s[2] = 15; s[3] = 23; }
   return s;
 }
-var KEY_OF = {"صباحي":"morning","مسائي":"night","مسائي (3-11)":"night2","شفت كامل":"full","شفت الجمعة":"friday","دوام 8 ساعات":"flex"};
+var KEY_OF = {"صباحي":"morning","مسائي":"night","مسائي (3-11)":"night2","شفت كامل":"full","شفت كامل (9-11)":"full2","شفت الجمعة":"friday","دوام 8 ساعات":"flex"};
 function openRec(){ return st && (st.records||[]).filter(function(x){ return x.in_at && !x.out_at; })[0]; }
 function drawSeg(){
   var box = $("seg"), keys = keysFor(), open = openRec();

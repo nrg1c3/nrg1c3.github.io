@@ -463,7 +463,8 @@ note.push("Another Machine Transfer = تحويل رصيد (لكاش أو لفر�
 if(day.handover && ((day.handover.drawer||[]).some(function(v){return v;}) || (day.handover.safe||[]).some(function(v){return v;}))){ var h = day.handover; note.push("الكاش متسلم من " + h.employee + " (" + shiftName(h.shift) + (h.submitted?"":"، لسه مقفلش") + "). اعدّ الفلوس وعدّل لو في اختلاف."); }
 $("dayNote").textContent = note.join(" ");
 $("amBranch").innerHTML = branchOpts(b) + '<option value="other">Other — مكنة تانية</option>'; $("recFrom").innerHTML = branchOpts(b); $("retBranch").innerHTML = branchOpts(b); $("cashFrom").innerHTML = branchOpts(b); $("retCashBranch").innerHTML = branchOpts(b);
-$("receiptBox").classList.toggle("hidden", sh==="morning");
+var npDay = ["2026-11-01","2026-11-02","2026-11-03"].indexOf(d) >= 0;
+$("receiptBox").classList.toggle("hidden", sh==="morning" || npDay); $("sheetBox").classList.toggle("hidden", npDay);
 if(sh==="morning"){
 $("sheetLabel").textContent = "Custody Sheet — صورة صفحة 1 من محضر العهدة (الفترة الصباحية + المسائية)";
 $("sheetHint").textContent = "الفترة المسائية (التسليم للشفت المسائي): عدد كل فئة لازم يطابق جدول الفلوس آخر الشفت، والرصيد لازم يطابق Money in Machine في الفورم.";
@@ -565,8 +566,9 @@ if($("amReturn").value.trim() && !$("retBranch").value){ msg(w,"اختار ال�
 if($("received").value.trim() && !$("recFrom").value){ msg(w,"اختار الفرع اللي استلمت منه الرصيد (Balance From)."); return; }
 if($("retCash").value.trim() && !$("retCashBranch").value){ msg(w,"اختار الفرع اللي رجّعتله الكاش (Cash Return To)."); return; }
 if($("recCash").value.trim() && !$("cashFrom").value){ msg(w,"اختار الفرع اللي استلمت منه الكاش (Cash From)."); return; }
-if(!adminEdit && ctx.shift!=="morning" && !receiptB64){ msg(w,"ارفع صورة تقرير المكنة الأول."); return; }
-if(!adminEdit && !sheetB64){ msg(w, ctx.shift==="morning" ? "ارفع صورة صفحة 1 من محضر العهدة الأول." : "ارفع صورة صفحة الغلق من محضر العهدة الأول."); return; }
+var noPhoto = ["2026-11-01","2026-11-02","2026-11-03"].indexOf(ctx.date) >= 0;
+if(!adminEdit && !noPhoto && ctx.shift!=="morning" && !receiptB64){ msg(w,"ارفع صورة تقرير المكنة الأول."); return; }
+if(!adminEdit && !noPhoto && !sheetB64){ msg(w, ctx.shift==="morning" ? "ارفع صورة صفحة 1 من محضر العهدة الأول." : "ارفع صورة صفحة الغلق من محضر العهدة الأول."); return; }
 if(!armed){
 armed = true;
 $("submitBtn").textContent = "تأكيد الرفع نهائيًا";
@@ -576,7 +578,7 @@ return;
 }
 busy = true; $("submitBtn").disabled = true; clearTimeout(saveTimer); saveTimer = null; dirty = false;
 if(ctx.shift!=="morning" && receiptB64) data.receipt = receiptB64; if(sheetB64) data.custody_sheet = sheetB64;
-$("submitBtn").textContent = adminEdit ? "بيتحفظ في الشيت..." : "بيتأكد من الصور...";
+$("submitBtn").textContent = (adminEdit || noPhoto) ? "بيتحفظ في الشيت..." : "بيتأكد من الصور...";
 api(Object.assign({action:"submit", data:data}, ctx)).then(function(r){
 busy = false; $("submitBtn").disabled = false;
 if(!r.ok){ if(r.locked){ lockOut(); return; } if(r.admin_bad) lockOpening(); armed = true; disarm(); msg(w, r.error||"الرفع ما نجحش، جرب تاني."); return; }

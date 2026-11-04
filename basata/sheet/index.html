@@ -1,0 +1,593 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#102A2E">
+<title>تقفيل بساطة</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Alexandria:wght@400;600;700&family=IBM+Plex+Sans+Arabic:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+--paper:#F3F5F3; --card:#FFFFFF; --ink:#102A2E; --teal:#0F5F5A; --muted:#5F6B70; --line:#DCE2E0; --soft:#F7F9F8; --accent:#0F5F5A;
+--in:#E7F3EE; --inink:#0E6B49; --out:#FBF0E4; --outink:#9A4A0B; --os:#ECEFF8; --osink:#3B4A8C;
+--err:#B42318; --errbg:#FDF0EE; --okbg:#E9F5EF; --danger:#B42318;
+--display:"Alexandria","IBM Plex Sans Arabic",Tahoma,sans-serif; --body:"IBM Plex Sans Arabic",Tahoma,"Segoe UI",sans-serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased}
+button,input,select{font:inherit;color:inherit}
+:focus-visible{outline:3px solid #7CC4B8;outline-offset:2px}
+.hidden{display:none!important}
+
+/* header */
+header{background:var(--ink);color:#fff;padding:16px 20px 54px;padding-top:max(16px,env(safe-area-inset-top))}
+.hbar{max-width:1180px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.brand{font-family:var(--display);font-weight:700;font-size:18px}
+.brand small{font-family:var(--body);font-weight:400;color:#A9C2C0;font-size:14px;margin-inline-start:8px}
+#status{font-size:13px;color:#CFE0DE;background:rgba(255,255,255,.08);border-radius:999px;padding:4px 12px}
+#status:empty{display:none}
+main{max-width:1180px;margin:-38px auto 0;padding:0 16px 40px;position:relative}
+
+/* cards */
+.card{background:var(--card);border-radius:18px;padding:20px;margin-bottom:16px;box-shadow:0 1px 2px rgba(16,42,46,.06),0 8px 24px rgba(16,42,46,.07)}
+.card h2{font-family:var(--display);font-weight:600;font-size:18px;margin:0 0 4px}
+.card .lead{color:var(--muted);font-size:14px;margin:0 0 14px}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}
+label{display:block;font-size:13px;font-weight:500;color:var(--muted);margin-bottom:5px}
+input,select{width:100%;padding:10px 12px;border:1.5px solid var(--line);border-radius:12px;font-size:15px;background:#fff}
+input:focus,select:focus{border-color:var(--teal);outline:none;box-shadow:0 0 0 3px rgba(15,95,90,.13)}
+input[readonly]{background:var(--soft)!important;color:var(--muted)}
+button{border:0;border-radius:12px;padding:11px 18px;cursor:pointer;font-size:15px}
+.primary{background:var(--teal);color:#fff;font-family:var(--display);font-weight:600}
+.ghost{background:var(--soft);color:var(--ink);border:1.5px solid var(--line)}
+.danger{background:var(--danger);color:#fff;font-family:var(--display);font-weight:600}
+button:disabled{opacity:.55;cursor:default}
+.msg{padding:12px 14px;border-radius:12px;margin-top:12px;display:none;font-size:14px}
+.msg.err{display:block;background:var(--errbg);color:var(--err)}
+.msg.ok{display:block;background:var(--okbg);color:#0B5E40}
+.row-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+
+/* login */
+#login{max-width:560px;margin-inline:auto}
+#login .primary{width:100%;padding:14px;font-size:17px}
+
+/* shift context */
+#ctx{display:inline-block;margin:12px 0 0!important;background:var(--soft);border-radius:999px;padding:5px 14px;color:var(--ink)!important;font-size:14px!important}
+
+/* transactions sheet */
+.layout{display:grid;grid-template-columns:1fr 300px;gap:16px;align-items:start}
+@media(max-width:900px){.layout{grid-template-columns:1fr}}
+.layout>*,.cashgrid>*{min-width:0}
+.sheetwrap{overflow:auto;border:1.5px solid var(--line);border-radius:14px;max-height:65vh}
+table.sheet{border-collapse:separate;border-spacing:0;min-width:760px;width:100%}
+.sheet th,.sheet td{border-bottom:1px solid var(--line);border-left:1px solid var(--line);padding:0;text-align:center}
+.sheet thead th{position:sticky;top:0;background:#fff;font-size:13px;font-weight:600;padding:8px 4px;z-index:1}
+.sheet thead tr:nth-child(2) th{top:37px}
+.sheet .grp-in{background:var(--in);color:var(--inink)}
+.sheet .grp-out{background:var(--out);color:var(--outink)}
+.sheet .grp-os{background:var(--os);color:var(--osink)}
+.sheet td.rn{background:var(--soft);color:var(--muted);font-size:12px;width:36px}
+.sheet td input{border:0;border-radius:0;text-align:center;padding:8px 4px;font-size:15px;background:transparent;font-variant-numeric:tabular-nums}
+.sheet td input:focus{box-shadow:inset 0 0 0 2px var(--teal);background:#FFFDF3}
+.sheet tbody tr:nth-child(even) td:not(.rn){background:#FBFCFB}
+.sheet tfoot td{background:var(--ink);color:#fff;font-weight:600;padding:9px 4px;position:sticky;bottom:0;font-variant-numeric:tabular-nums;border-color:#24424A}
+
+/* summary: the one dark panel */
+.summary{background:var(--ink)!important;color:#fff}
+.sum{width:100%;border-collapse:collapse}
+.sum td{padding:8px 2px;border-bottom:1px solid rgba(255,255,255,.1);font-size:14px;color:#CFE0DE}
+.sum td:last-child{text-align:left;direction:ltr;color:#fff;font-weight:600;font-variant-numeric:tabular-nums}
+.sum tr.big td{border-bottom:0;padding-top:12px}
+.sum tr.big td:last-child{font-family:var(--display);font-size:22px}
+.sum tr:last-child td:last-child{font-size:30px;color:#7FE0B6}
+#sumNote{color:#A9C2C0!important}
+
+/* cash count */
+.cashgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px;margin-top:4px;align-items:start}
+.cash{border-collapse:separate;border-spacing:0;width:100%;border:1.5px solid var(--line);border-radius:14px;overflow:hidden}
+.cash th,.cash td{border-bottom:1px solid var(--line);padding:6px;text-align:center;font-variant-numeric:tabular-nums}
+.cash thead tr:first-child th{background:var(--soft);font-family:var(--display);font-weight:600;font-size:14px;padding:10px 6px}
+.cash thead tr:nth-child(2) th{font-size:12px;color:var(--muted);font-weight:500}
+.cash td input{border:1.5px solid var(--line);border-radius:8px;text-align:center;padding:6px 2px}
+.cash tfoot td{background:var(--soft);font-weight:600;border-bottom:0}
+.cashsum td{text-align:right;font-size:13px}
+.cashsum td:last-child{text-align:left;font-weight:600;direction:ltr;width:45%;font-size:15px}
+.cashsum tr.big td{background:var(--okbg);color:var(--inink)}
+.cashsum tr.big td:last-child{font-family:var(--display);font-size:17px}
+.cashsum select{padding:6px 8px;font-size:13px;border-radius:8px}
+.cashsum td.pick{text-align:right;direction:rtl;font-weight:normal;font-size:13px;color:var(--muted);background:var(--soft)}
+.cashsum input{text-align:left!important;direction:ltr}
+.neg{color:var(--err)!important}
+#dayNote{color:var(--muted)!important;font-size:13px!important;line-height:1.7;background:var(--soft);border-radius:12px;padding:12px 14px;margin-top:14px!important}
+
+/* photos and submit */
+.upload{border:1.5px dashed #B9C6C3;border-radius:14px;padding:14px;background:var(--soft)}
+.upload + .upload{margin-top:12px}
+.upload label{color:var(--ink)!important}
+.upload input[type=file]{background:#fff;border-style:solid}
+#submitBtn{padding:15px;font-size:17px}
+
+/* done */
+#done{max-width:560px;margin-inline:auto;text-align:center;padding:36px 20px}
+#done svg{width:88px;height:88px}
+#done circle{stroke:#138A5E;stroke-width:5;fill:none;stroke-dasharray:283;stroke-dashoffset:283;animation:draw .5s ease-out forwards}
+#done path{stroke:#138A5E;stroke-width:6;fill:none;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:60;stroke-dashoffset:60;animation:draw .35s .4s ease-out forwards}
+#done h2{font-size:22px;margin:16px 0 4px}
+@keyframes draw{to{stroke-dashoffset:0}}
+@media (prefers-reduced-motion:reduce){#done circle,#done path{animation:none;stroke-dashoffset:0}}
+.center{text-align:center}
+</style>
+</head>
+<body>
+<header><div class="hbar"><span class="brand">بساطة<small>تقفيل الشفت</small></span><span id="status"></span></div></header>
+<main>
+
+<section id="login" class="card">
+<h2>افتح شيت الشفت</h2>
+<p class="lead">اختار الفرع واسمك والشفت، واكتب الرقم السري للفرع.</p>
+<div class="grid2">
+<div><label for="branch">الفرع</label><select id="branch"><option value="">اختار الفرع</option><option>المقطم</option><option>حلوان</option><option>صفط اللبن</option><option>طنطا</option></select></div>
+<div><label for="employeeSel">اسم الموظف</label><select id="employeeSel"><option value="">اختار الفرع الأول</option></select></div>
+<div><label for="shift">الشفت</label><select id="shift"><option value="">اختار الشفت</option><option value="morning">صباحي</option><option value="night">مسائي</option><option value="full">شيفت كامل</option></select></div>
+<div><label for="date">اليوم</label><input id="date" type="date"></div>
+<div><label for="pin">الرقم السري للفرع</label><input id="pin" type="password" inputmode="numeric" autocomplete="off"></div>
+</div>
+<div class="row-actions"><button class="primary" id="openBtn">افتح الشيت</button></div>
+<div id="loginMsg" class="msg"></div>
+</section>
+
+<section id="work" class="hidden">
+<div class="card">
+<h2>بيانات الشفت</h2>
+<div class="grid2" style="margin-top:12px">
+<div><label for="employee">اسم الموظف</label><input id="employee" readonly></div>
+<div><label for="account">Account Number</label><input id="account" autocomplete="off"></div>
+<div><label for="machine">Machine Number</label><input id="machine" autocomplete="off"></div>
+</div>
+<p id="ctx"></p>
+<div id="adminBar" class="hidden" style="margin-top:10px;padding:10px 12px;border-radius:10px;background:#ecfdf5;border:1px solid #a7f3d0;font-size:14px;line-height:1.7"><b>دخول الإدارة</b> — <span id="adminNote"></span><div style="margin-top:8px"><a id="sheetLink" target="_blank" rel="noopener" class="ghost" style="display:inline-block;padding:7px 12px;border-radius:8px;border:1px solid #10b981;color:#065f46;text-decoration:none;font-weight:600">افتح شيت الفرع على Google Sheets ↗</a></div></div>
+</div>
+
+<div class="layout">
+<div class="card">
+<h2>العمليات</h2>
+<p class="lead">كل عملية في سطر، تحت العمود بتاعها. Enter بينزّلك للسطر اللي بعده.</p>
+<div class="sheetwrap">
+<table class="sheet" id="sheet">
+<thead>
+<tr><th rowspan="2">#</th><th class="grp-in" colspan="5">IN (سحب : الوارد)</th><th class="grp-out" colspan="2">OUT (ايداع او فواتير+المدفوعات)</th><th class="grp-os" rowspan="2">OS (توريدات شركات)</th></tr>
+<tr><th class="grp-in">Vf Cash</th><th class="grp-in">Etisalat Cash</th><th class="grp-in">Orange Cash</th><th class="grp-in">We Cash</th><th class="grp-in">Wallet Banking</th><th class="grp-out">ايداع</th><th class="grp-out">مدفوعات</th></tr>
+</thead>
+<tbody id="body"></tbody>
+<tfoot><tr id="foot"></tr></tfoot>
+</table>
+</div>
+<div class="row-actions"><button class="ghost" id="addRows">+ 10 سطور</button></div>
+</div>
+
+<div>
+<div class="card summary">
+<table class="sum">
+<tr><td>(R) IN</td><td id="s_in">0</td></tr>
+<tr><td>OUT</td><td id="s_out">0</td></tr>
+<tr><td>OS</td><td id="s_os">0</td></tr>
+<tr><td>TRX</td><td id="s_trx">0</td></tr>
+<tr><td>(OS+OUT) المدفوعات</td><td id="s_pay">0</td></tr>
+<tr class="big"><td>Amount (In+Out)</td><td id="s_amount">0</td></tr>
+<tr class="big"><td>Sales</td><td id="s_sales">0</td></tr>
+</table>
+<p id="sumNote" class="hidden" style="font-size:12px;margin:8px 0 0">شامل الشفت الصباحي (اليوم كله). TRX للشفت ده بس.</p>
+</div>
+</div>
+</div>
+
+<div class="card">
+<h2>جرد الفلوس والأرصدة</h2>
+<p class="lead">اكتب عدد كل فئة في الدرج والخزنة، والتحويلات اللي حصلت النهارده.</p>
+<div class="cashgrid">
+<table class="cash">
+<thead><tr><th colspan="3">Cash in Drawer</th></tr><tr><th>الفئة</th><th>العدد</th><th>Total</th></tr></thead>
+<tbody id="drawerBody"></tbody>
+<tfoot><tr><td colspan="2">الإجمالي</td><td id="c_drawer">0</td></tr></tfoot>
+</table>
+<table class="cash">
+<thead><tr><th colspan="3">Cash in Safe</th></tr><tr><th>الفئة</th><th>العدد</th><th>Total</th></tr></thead>
+<tbody id="safeBody"></tbody>
+<tfoot><tr><td colspan="2">الإجمالي</td><td id="c_safe">0</td></tr></tfoot>
+</table>
+<table class="cash">
+<thead><tr><th colspan="3">Number of Banknotes</th></tr><tr><th>الفئة</th><th>العدد</th><th>Total of money</th></tr></thead>
+<tbody id="notesBody"></tbody>
+<tfoot><tr><td colspan="2">الإجمالي</td><td id="c_notes">0</td></tr></tfoot>
+</table>
+<table class="cash cashsum">
+<tr><td>Cash Center</td><td><input id="cashCenter" inputmode="decimal"></td></tr>
+<tr><td>Another Machine — Transfer<br>تحويل رصيد</td><td><input id="anotherMachine" inputmode="decimal"></td></tr>
+<tr><td colspan="2" class="pick">Transfer To — محوّل لفرع<select id="amBranch" style="margin-top:4px"></select></td></tr>
+<tr><td>Another Machine — Return Balance<br>رد رصيد لفرع</td><td><input id="amReturn" inputmode="decimal"></td></tr>
+<tr><td colspan="2" class="pick">Return To — مردود لفرع<select id="retBranch" style="margin-top:4px"></select></td></tr>
+<tr><td>Return Cash<br>رد كاش لفرع</td><td><input id="retCash" inputmode="decimal"></td></tr>
+<tr><td colspan="2" class="pick">Cash Return To — كاش مردود لفرع<select id="retCashBranch" style="margin-top:4px"></select></td></tr>
+<tr><td>Received Balance<br>مستلم رصيد من فرع</td><td><input id="received" inputmode="decimal"></td></tr>
+<tr><td colspan="2" class="pick">Balance From — رصيد من فرع<select id="recFrom" style="margin-top:4px"></select></td></tr>
+<tr><td>Received Cash<br>مستلم كاش من فرع</td><td><input id="recCash" inputmode="decimal"></td></tr>
+<tr><td colspan="2" class="pick">Cash From — كاش من فرع<select id="cashFrom" style="margin-top:4px"></select></td></tr>
+<tr><td>Opening Machine Balance (رصيد المكنة)<br><button class="linkbtn" id="openAdmin" type="button" style="font-size:12px;padding:2px 0">تعديل الرصيد (للإدارة)</button></td><td><input id="opening" inputmode="decimal"></td></tr>
+<tr class="big"><td>Money in Machine (الإجمالي)</td><td id="k_machine">0</td></tr>
+<tr><td>Cash in Safe &amp; Cargo</td><td id="k_cargo">0</td></tr>
+<tr class="big"><td>Total Cash in Branch &amp; Machine</td><td id="k_total">0</td></tr>
+<tr><td>Custody (العهدة)</td><td id="k_custody">0</td></tr>
+<tr><td>رصيد فوق العهدة</td><td id="k_extra">0</td></tr>
+<tr><td>إجمالي العهدة</td><td id="k_custTotal">0</td></tr>
+<tr class="big"><td>Difference (الفرق)</td><td id="k_diff">0</td></tr>
+</table>
+</div>
+<p id="dayNote"></p>
+</div>
+
+<div class="card">
+<h2>الصور والرفع</h2>
+<p class="lead">صوّر كل صفحة لوحدها بالكاميرا. لو في أكتر من صفحة، اختار التانية وهتتضاف تحت الأولى (لحد 4 صور).</p>
+<div id="receiptBox" class="upload">
+<label for="receipt" style="font-size:14px;margin-bottom:8px"><strong>Machine Report — صورة تقرير المكنة (اليوم كله)</strong></label>
+<input id="receipt" type="file" accept="image/*" multiple>
+<img id="receiptPreview" class="hidden" alt="" style="max-width:220px;max-height:220px;margin:10px 0;border:1px solid var(--line);border-radius:10px">
+<p id="receiptHint" style="font-size:12px;color:var(--muted);margin:6px 0 0">التحويلات الواردة + المدفوعات في التقرير لازم تساوي Total Sales بتاع اليوم كله (+ Received Balance لو موجود)، والتحويلات الصادرة لازم تساوي Cash Center + Another Machine Transfer + Return.</p>
+</div>
+<div id="sheetBox" class="upload">
+<label for="custodySheet" style="font-size:14px;margin-bottom:8px"><strong id="sheetLabel">Custody Sheet — صورة محضر استلام العهدة</strong></label>
+<input id="custodySheet" type="file" accept="image/*" multiple>
+<img id="sheetPreview" class="hidden" alt="" style="max-width:220px;max-height:220px;margin:10px 0;border:1px solid var(--line);border-radius:10px">
+<p id="sheetHint" style="font-size:12px;color:var(--muted);margin:6px 0 0"></p>
+</div>
+<div style="height:16px"></div>
+<button class="primary" style="width:100%" id="submitBtn">تقفيل ورفع الشفت</button>
+<p style="font-size:13px;color:var(--muted);margin:10px 0 0;text-align:center">بعد الرفع الشيت بيتقفل ومش هتقدر تفتحه أو تعدّله تاني.</p>
+<div id="workMsg" class="msg"></div>
+</div>
+</section>
+
+<section id="done" class="card hidden">
+<svg viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="45"/><path d="M30 52 l14 14 l26 -30"/></svg>
+<h2>اترفع التقفيل</h2>
+<p id="doneCtx" style="color:var(--muted);margin:0 0 20px"></p>
+<p id="doneLink" class="hidden" style="margin:0 0 16px"><a target="_blank" rel="noopener" style="color:#065f46;font-weight:600">افتح شيت الفرع ↗</a></p>
+<button class="ghost" onclick="location.reload()">تقفيل شفت تاني</button>
+</section>
+
+</main>
+<script>
+(function(){
+var API = "https://api.nrg-egypt.com/webhook/basata-sheet-api";
+var COLS = 8, DENOMS = [200,100,50,20,10,5,1];
+var ctx = null, saveTimer = null, busy = false, armed = false, receiptB64 = "", sheetB64 = "", adminCode = "", openEditable = false, adminMode = false, adminEdit = false, sheetUrl = "";
+function disarm(){ if(!armed) return; armed = false; var b = document.getElementById("submitBtn"); b.textContent = adminEdit ? "حفظ التعديلات في الشيت" : "تقفيل ورفع الشفت"; b.className = "primary"; var w = document.getElementById("workMsg"); w.className = "msg"; }
+var $ = function(id){ return document.getElementById(id); };
+var BRANCHES = ["المقطم","حلوان","صفط اللبن","طنطا"];
+function branchOpts(own){ return '<option value="">Select — اختار الفرع</option>' + BRANCHES.filter(function(b){ return b!==own; }).map(function(b){ return '<option>'+b+'</option>'; }).join(""); }
+var EMPLOYEES = {"المقطم":["ملك","يوسف"],"حلوان":["فاطمة","ليلى"],"صفط اللبن":["مروة","آية"],"طنطا":["مهند","نهلة"]};
+$("branch").onchange = function(){ var list = EMPLOYEES[this.value]||[]; $("employeeSel").innerHTML = '<option value="">اختار اسمك</option>' + list.map(function(n){ return '<option>'+n+'</option>'; }).join(""); };
+
+function todayCairo(){
+try { return new Intl.DateTimeFormat("en-CA",{timeZone:"Africa/Cairo"}).format(new Date()); }
+catch(e){ return new Date().toISOString().slice(0,10); }
+}
+$("date").value = todayCairo();
+
+function num(v){ if(v===null||v===undefined) return NaN; v = String(v).replace(/[,\s]/g,"").replace(/[٠-٩]/g,function(d){return "٠١٢٣٤٥٦٧٨٩".indexOf(d);}); if(v==="") return NaN; var n = Number(v); return isFinite(n)?n:NaN; }
+function fmt(n){ return (Math.round(n*100)/100).toLocaleString("en-US"); }
+function msg(el,text,kind){ el.textContent = text; el.className = "msg " + (kind||"err"); }
+function clearMsg(el){ el.className = "msg"; el.textContent = ""; }
+
+function api(payload){
+var body = JSON.stringify(payload);
+return fetch(API,{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},body:body,keepalive:body.length < 60000})
+.then(function(r){ return r.text(); })
+.then(function(t){ try { return JSON.parse(t); } catch(e){ return {ok:false,error:"رد غير مفهوم من السيرفر"}; } });
+}
+
+function addRows(n){
+var body = $("body");
+for(var i=0;i<n;i++){
+var tr = document.createElement("tr");
+var r = body.children.length + 1;
+var html = '<td class="rn">'+r+'</td>';
+for(var c=0;c<COLS;c++) html += '<td><input inputmode="decimal" data-c="'+c+'"></td>';
+tr.innerHTML = html;
+body.appendChild(tr);
+}
+}
+var day = { opening:0, opening_known:true, is_first:false, other:{in:0,out:0,os:0,cc:0,am:0,count:0}, custody:0 };
+function buildCash(){
+var dr = "", sf = "", nt = "";
+DENOMS.forEach(function(d,i){
+dr += '<tr><td>'+d+'</td><td><input inputmode="numeric" enterkeyhint="next" id="dr'+i+'"></td><td id="drt'+i+'">0</td></tr>';
+sf += '<tr><td>'+d+'</td><td><input inputmode="numeric" enterkeyhint="next" id="sf'+i+'"></td><td id="sft'+i+'">0</td></tr>';
+nt += '<tr><td>'+d+'</td><td id="ntc'+i+'">0</td><td id="ntt'+i+'">0</td></tr>';
+});
+$("drawerBody").innerHTML = dr; $("safeBody").innerHTML = sf; $("notesBody").innerHTML = nt;
+}
+function buildFoot(){
+var html = '<td></td>';
+for(var c=0;c<COLS;c++) html += '<td id="f'+c+'">0</td>';
+$("foot").innerHTML = html;
+}
+
+function collect(){
+var rows = [];
+var trs = $("body").children;
+for(var i=0;i<trs.length;i++){
+var ins = trs[i].querySelectorAll("input"), row = [], any = false;
+for(var c=0;c<COLS;c++){ var v = ins[c].value.trim(); row.push(v); if(v) any = true; }
+rows.push(any?row:null);
+}
+while(rows.length && rows[rows.length-1]===null) rows.pop();
+rows = rows.map(function(r){ return r || ["","","","","","","",""]; });
+var drawer = DENOMS.map(function(_,i){ return $("dr"+i).value.trim(); });
+var safe = DENOMS.map(function(_,i){ return $("sf"+i).value.trim(); });
+return { employee:(ctx?ctx.employee:""), account:$("account").value.trim(), machine:$("machine").value.trim(),
+opening:$("opening").value.trim(), rows:rows, drawer:drawer, safe:safe,
+cash_center:$("cashCenter").value.trim(),
+another_machine:$("anotherMachine").value.trim(), am_branch:$("amBranch").value,
+am_return:$("amReturn").value.trim(), ret_branch:$("retBranch").value,
+received:$("received").value.trim(), rec_from:$("recFrom").value,
+rec_cash:$("recCash").value.trim(), cash_from:$("cashFrom").value,
+ret_cash:$("retCash").value.trim(), ret_cash_branch:$("retCashBranch").value, admin_code:adminCode, opening_admin:!!adminCode };
+}
+function fill(d){
+d = d || {};
+$("employee").value = ctx ? ctx.employee : ""; $("account").value = d.account||""; $("machine").value = d.machine||"";
+$("opening").value = (d.opening!==undefined && String(d.opening).trim()!=="") ? d.opening : (day.opening_known || day.opening ? String(day.opening) : ""); $("cashCenter").value = d.cash_center||"";
+$("anotherMachine").value = d.another_machine||""; $("amBranch").value = d.am_branch==="مكنة تانية" ? "other" : (d.am_branch||"");
+$("amReturn").value = d.am_return||""; $("retBranch").value = d.ret_branch||"";
+$("received").value = d.received||""; $("recFrom").value = d.rec_from||"";
+$("recCash").value = d.rec_cash||""; $("cashFrom").value = d.cash_from||"";
+$("retCash").value = d.ret_cash||""; $("retCashBranch").value = d.ret_cash_branch||"";
+var rows = d.rows||[];
+var need = Math.max(20, Math.ceil((rows.length+5)/10)*10);
+$("body").innerHTML = ""; addRows(need);
+var trs = $("body").children;
+rows.forEach(function(r,i){ var ins = trs[i].querySelectorAll("input"); for(var c=0;c<COLS;c++) ins[c].value = r[c]||""; });
+var ho = day.handover || {}; var useHo = !(d.drawer||[]).some(function(v){return v;}) && !(d.safe||[]).some(function(v){return v;});
+var srcD = useHo ? (ho.drawer||[]) : (d.drawer||[]), srcS = useHo ? (ho.safe||[]) : (d.safe||[]);
+DENOMS.forEach(function(_,i){ $("dr"+i).value = srcD[i]||""; $("sf"+i).value = srcS[i]||""; });
+recalc();
+}
+
+function recalc(){
+var colSum = [0,0,0,0,0,0,0,0], trx = 0, bad = 0;
+var inputs = $("body").querySelectorAll("input");
+for(var i=0;i<inputs.length;i++){
+var v = inputs[i].value.trim(); if(!v){ inputs[i].style.color=""; continue; }
+var n = num(v);
+if(isNaN(n)){ bad++; inputs[i].style.color = "#b91c1c"; continue; }
+inputs[i].style.color = ""; colSum[+inputs[i].dataset.c] += n; trx++;
+}
+for(var c=0;c<COLS;c++) $("f"+c).textContent = fmt(colSum[c]);
+var IN = colSum[0]+colSum[1]+colSum[2]+colSum[3]+colSum[4], OUT = colSum[5]+colSum[6], OS = colSum[7];
+// night shift continues the morning shift: the summary shows the whole day (morning + this shift)
+var od = (ctx && ctx.shift==="night") ? (day.other||{}) : {};
+var dIN = IN + (od.in||0), dOUT = OUT + (od.out||0), dOS = OS + (od.os||0);
+$("s_in").textContent = fmt(dIN); $("s_out").textContent = fmt(dOUT); $("s_os").textContent = fmt(dOS);
+$("s_trx").textContent = trx; $("s_pay").textContent = fmt(dOS+dOUT);
+$("s_amount").textContent = fmt(dIN+dOUT); $("s_sales").textContent = fmt(dIN+dOUT+dOS);
+$("sumNote").classList.toggle("hidden", !(ctx && ctx.shift==="night" && (od.count||0) > 0));
+var dr=0, sf=0, notes=0;
+DENOMS.forEach(function(d,i){
+var a = num($("dr"+i).value)||0, b = num($("sf"+i).value)||0;
+$("drt"+i).textContent = fmt(a*d); $("sft"+i).textContent = fmt(b*d);
+$("ntc"+i).textContent = fmt(a+b); $("ntt"+i).textContent = fmt((a+b)*d);
+dr += a*d; sf += b*d; notes += (a+b)*d;
+});
+$("c_drawer").textContent = fmt(dr); $("c_safe").textContent = fmt(sf); $("c_notes").textContent = fmt(notes);
+// same formulas as the sheet (R12..R16, T32)
+var o = day.other || {};
+// the sheet keeps one value per day for each of these: if this shift left one blank, the other shift's value is used
+var dayVal = function(id, k){ var v = $(id).value.trim(); return v ? (num(v)||0) : (o[k]||0); };
+var cc = dayVal("cashCenter","cc"), am = dayVal("anotherMachine","am"), amRet = dayVal("amReturn","amRet");
+var recBal = dayVal("received","recBal"), retCash = dayVal("retCash","retCash");
+var opening = num($("opening").value)||0;
+var move = (IN + (o.in||0)) - ((OUT + (o.out||0)) + (OS + (o.os||0))) - cc - am - amRet + recBal;
+var machine = opening + move;
+var extra = Math.max(0, (day.prev_extra||0) + recBal - amRet - retCash), custTotal = (day.custody||0) + extra;
+var total = notes + machine, diff = total - custTotal;
+$("k_cargo").textContent = fmt(notes); $("k_machine").textContent = fmt(machine);
+$("k_total").textContent = fmt(total);
+$("k_custody").textContent = fmt(day.custody||0); $("k_extra").textContent = fmt(extra); $("k_custTotal").textContent = fmt(custTotal);
+$("k_diff").textContent = fmt(diff); $("k_diff").className = Math.abs(diff) >= 1 ? "neg" : "";
+return bad;
+}
+
+function setStatus(t){ $("status").textContent = t; }
+// Saving to the server costs one run each time, so the draft is saved every 10 minutes while
+// there are changes, and right away when the employee leaves the page or locks the phone.
+var dirty = false, lastSave = 0, SAVE_EVERY = 10*60*1000, MIN_GAP = 60*1000;
+function scheduleSave(){
+if(!ctx) return;
+if(adminEdit){ dirty = true; setStatus("فيه تعديلات — دوسي حفظ التعديلات في الشيت"); return; }
+dirty = true;
+setStatus("فيه تعديلات — هتتحفظ لوحدها");
+if(!saveTimer) saveTimer = setTimeout(function(){ saveTimer = null; if(dirty) saveNow(); }, SAVE_EVERY);
+}
+function flushSave(){ if(ctx && !adminEdit && dirty && !busy && Date.now() - lastSave > MIN_GAP) saveNow(); }
+document.addEventListener("visibilitychange", function(){ if(document.visibilityState === "hidden") flushSave(); });
+window.addEventListener("pagehide", flushSave);
+function saveNow(){
+if(!ctx) return Promise.resolve();
+clearTimeout(saveTimer); saveTimer = null;
+dirty = false; lastSave = Date.now();
+setStatus("بيتحفظ...");
+var payload = Object.assign({action:"save", data:collect()}, ctx);
+return api(payload).then(function(r){
+if(r.ok) setStatus("✓ اتحفظ " + new Date().toLocaleTimeString("ar-EG",{hour:"2-digit",minute:"2-digit"}));
+else if(r.admin_bad){ lockOpening(); setStatus("⚠️ كود الإدارة غلط — الرصيد اتقفل تاني"); dirty = true; }
+else if(r.locked){ lockOut(); }
+else setStatus("⚠️ الحفظ ما نجحش: " + (r.error||""));
+}).catch(function(){ dirty = true; setStatus("⚠️ مفيش إنترنت — هيتحفظ لما يرجع"); });
+}
+function lockOpening(){ adminCode = ""; var op = $("opening"); if(!openEditable){ op.readOnly = true; op.style.background = "#f1f5f9"; } }
+$("openAdmin").onclick = function(){
+if(!ctx) return;
+var c = window.prompt("اكتب كود الإدارة عشان تعدّل رصيد المكنة");
+if(!c || !c.trim()) return;
+adminCode = c.trim(); var op = $("opening"); op.readOnly = false; op.style.background = ""; op.focus(); op.select && op.select();
+dirty = true; saveNow();
+};
+function shiftName(s){ return s==="morning"?"شفت صباحي":(s==="night"?"شفت مسائي":"شفت كامل"); }
+function lockOut(){
+ctx = null; $("work").classList.add("hidden"); $("login").classList.remove("hidden");
+msg($("loginMsg"),"الشفت ده اتقفل ورُفع قبل كده ومينفعش يتفتح تاني.");
+}
+
+$("openBtn").onclick = function(){
+var b = $("branch").value, p = $("pin").value.trim(), d = $("date").value, s = $("employeeSel").value, sh = $("shift").value;
+clearMsg($("loginMsg"));
+if(!b||!p||!d||!s||!sh){ msg($("loginMsg"),"اختار الفرع واسمك والشفت واليوم واكتب الرقم السري."); return; }
+$("openBtn").disabled = true;
+api({action:"load", branch:b, pin:p, date:d, employee:s, shift:sh}).then(function(r){
+$("openBtn").disabled = false;
+if(!r.ok){ msg($("loginMsg"), r.locked ? "الشفت ده اتقفل ورُفع قبل كده ومينفعش يتفتح تاني." : (r.error||"حصل خطأ")); return; }
+ctx = {branch:b, pin:p, date:d, employee:s, shift:sh};
+$("ctx").textContent = b + " — " + d + " — " + s + " — " + shiftName(sh);
+day = r.day || day;
+var note = [];
+if(day.other && day.other.count) note.push("Money in Machine محسوب على اليوم كله (الموظفين الاتنين)، زي الشيت.");
+note.push(day.opening_editable ? "أول يوم في الشهر: اكتب رصيد المكنة اللي معاك. بعد كده الرصيد هيترحّل لوحده." : "رصيد المكنة مترحّل أوتوماتيك من الشفت/اليوم اللي قبلك ومقفول.");
+note.push("Another Machine Transfer = تحويل رصيد (لكاش أو لفرع قصاد كاش) ومش بيغيّر العهدة. Another Machine Return Balance = رد رصيد كان متاخد من فرع تاني وبينزّل العهدة. Return Cash = رد المبلغ ده كاش بدل رصيد، بيطلع من جدول الفلوس وبينزّل العهدة برضو. Received Balance بيتضاف على رصيد المكنة وبيزوّد العهدة لحد ما يترد. Received Cash بيتعد في جدول الفلوس ومش بيغيّر العهدة. ممكن تكتب في الخانات كلها في نفس اليوم.");
+if(day.handover && ((day.handover.drawer||[]).some(function(v){return v;}) || (day.handover.safe||[]).some(function(v){return v;}))){ var h = day.handover; note.push("الكاش متسلم من " + h.employee + " (" + h.date + " — " + shiftName(h.shift) + (h.submitted?"":"، لسه مقفلش") + "). اعدّ الفلوس وعدّل لو في اختلاف."); }
+$("dayNote").textContent = note.join(" ");
+$("amBranch").innerHTML = branchOpts(b) + '<option value="other">Other — مكنة تانية</option>'; $("recFrom").innerHTML = branchOpts(b); $("retBranch").innerHTML = branchOpts(b); $("cashFrom").innerHTML = branchOpts(b); $("retCashBranch").innerHTML = branchOpts(b);
+$("receiptBox").classList.toggle("hidden", sh==="morning");
+if(sh==="morning"){
+$("sheetLabel").textContent = "Custody Sheet — صورة صفحة 1 من محضر العهدة (الفترة الصباحية + المسائية)";
+$("sheetHint").textContent = "الفترة المسائية (التسليم للشفت المسائي): عدد كل فئة لازم يطابق جدول الفلوس آخر الشفت، والرصيد لازم يطابق Money in Machine في الفورم.";
+} else {
+$("sheetLabel").textContent = "Custody Sheet — صورة صفحة الغلق من محضر العهدة";
+$("sheetHint").textContent = "عدد كل فئة وقت الغلق لازم يطابق جدول الفلوس، والأرصدة وقت الغلق لازم تطابق الرصيد المتاح في تقرير المكنة." + "";
+}
+fill(r.draft);
+adminMode = !!r.admin; adminEdit = !!(r.admin && r.submitted); sheetUrl = r.sheet_url || "";
+$("adminBar").classList.toggle("hidden", !adminMode);
+if(adminMode){ $("adminNote").textContent = adminEdit ? ("الشفت ده اترفع قبل كده" + (r.submitted_at ? " (" + new Date(r.submitted_at).toLocaleString("ar-EG",{day:"numeric",month:"short",hour:"2-digit",minute:"2-digit"}) + ")" : "") + ". تقدري تعدّلي الأرقام ودوسي حفظ التعديلات، وهتتكتب على شيت الفرع على طول من غير صور.") : "الشفت ده لسه ما اترفعش. تقدري تعدّلي وتحفظي، والرفع النهائي محتاج الصور زي الموظف."; var sl = $("sheetLink"); if(sheetUrl){ sl.href = sheetUrl; sl.style.display = "inline-block"; } else sl.style.display = "none"; }
+armed = true; disarm();
+var op = $("opening");
+adminCode = ""; openEditable = !!day.opening_editable;
+if(day.opening_editable){ op.readOnly = false; op.style.background = ""; }
+else { if(!(r.draft && r.draft.opening_admin)) op.value = String(day.opening||0); op.readOnly = true; op.style.background = "#f1f5f9"; }
+recalc();
+$("login").classList.add("hidden"); $("work").classList.remove("hidden");
+setStatus(r.draft ? "✓ رجّعنا آخر حاجة اتحفظت" : "شيت جديد");
+}).catch(function(){ $("openBtn").disabled = false; msg($("loginMsg"),"مفيش اتصال بالسيرفر. اتأكد من الإنترنت وجرب تاني."); });
+};
+
+document.addEventListener("input", function(e){
+if(!ctx) return;
+if(e.target.closest("#work")){ recalc(); scheduleSave(); disarm(); }
+});
+document.addEventListener("keydown", function(e){
+var t = e.target; if(e.key!=="Enter") return;
+var cg = t.closest && t.closest(".cashgrid");
+if(cg && t.tagName==="INPUT"){
+e.preventDefault();
+var list = Array.prototype.filter.call(cg.querySelectorAll("input"), function(x){ return !x.readOnly && !x.disabled; });
+var nx = list[list.indexOf(t)+1];
+if(nx){ nx.focus(); nx.select && nx.select(); } else { t.blur(); }
+return;
+}
+if(!t.dataset || t.dataset.c===undefined) return;
+e.preventDefault();
+var tr = t.closest("tr"), next = tr.nextElementSibling;
+if(!next){ addRows(10); next = tr.nextElementSibling; }
+next.querySelectorAll("input")[+t.dataset.c].focus();
+});
+$("addRows").onclick = function(){ addRows(10); };
+// photo fields: photos are added one by one (or several at once), up to 4, and stacked into one image (max 1600px wide, 4000px tall)
+function photoField(inputId, previewId, set){
+var kept = [], inp = $(inputId), prev = $(previewId);
+var bar = document.createElement("div"); bar.style.cssText = "display:none;gap:8px;align-items:center;flex-wrap:wrap;margin:4px 0";
+bar.innerHTML = '<span style="font-size:13px;color:var(--accent)"></span><button type="button" class="ghost" style="padding:5px 10px;font-size:13px">مسح الصور</button>';
+prev.parentNode.insertBefore(bar, prev.nextSibling);
+bar.querySelector("button").onclick = function(){ kept = []; render(); };
+function render(){
+disarm();
+if(!kept.length){ set(""); prev.classList.add("hidden"); bar.style.display = "none"; return; }
+var W = Math.min(1600, Math.max.apply(null, kept.map(function(im){ return im.naturalWidth || im.width; })));
+var parts = kept.map(function(im){ var w0 = im.naturalWidth || im.width, h0 = im.naturalHeight || im.height, sc = Math.min(1, W / w0); return { im: im, w: Math.round(w0*sc), h: Math.round(h0*sc) }; });
+var H = parts.reduce(function(a,q){ return a + q.h; }, 0), k = Math.min(1, 4000 / H);
+var c = document.createElement("canvas"); c.width = Math.round(W*k); c.height = Math.round(H*k);
+var g = c.getContext("2d"); g.fillStyle = "#fff"; g.fillRect(0, 0, c.width, c.height);
+var y = 0; parts.forEach(function(q){ g.drawImage(q.im, 0, y, Math.round(q.w*k), Math.round(q.h*k)); y += Math.round(q.h*k); });
+var data = c.toDataURL("image/jpeg", 0.85); set(data.split(",")[1] || "");
+prev.src = data; prev.classList.remove("hidden");
+bar.style.display = "flex";
+bar.querySelector("span").textContent = "✓ " + kept.length + (kept.length === 1 ? " صورة" : " صور") + (kept.length < 4 ? " — لو في صفحة تانية اختارها وهتتضاف" : "");
+}
+inp.onchange = function(){
+var files = Array.prototype.slice.call(this.files || []); inp.value = "";
+if(!files.length) return;
+if(kept.length + files.length > 4){ msg($("workMsg"),"أقصى حاجة 4 صور. دوس مسح الصور وابدأ تاني لو محتاج."); files = files.slice(0, Math.max(0, 4 - kept.length)); if(!files.length) return; }
+var imgs = [], left = files.length, failed = false;
+files.forEach(function(f, j){
+var img = new Image(), url = URL.createObjectURL(f);
+img.onload = function(){ imgs[j] = img; if(--left === 0) done(); };
+img.onerror = function(){ failed = true; if(--left === 0) done(); };
+img.src = url;
+});
+function done(){
+if(failed){ msg($("workMsg"),"في ملف من اللي اخترتهم مش صورة."); return; }
+for(var i=0;i<imgs.length;i++){
+var w0 = imgs[i].naturalWidth || imgs[i].width, h0 = imgs[i].naturalHeight || imgs[i].height;
+if(Math.max(w0,h0) < 300){ msg($("workMsg"),"الصورة صغيرة قوي ("+w0+"×"+h0+") ومش هتتقري. صوّر بالكاميرا أو ارفع الصورة الأصلية، مش صورة مصغّرة من الواتساب."); return; }
+}
+kept = kept.concat(imgs); render();
+}
+};
+}
+photoField("receipt", "receiptPreview", function(v){ receiptB64 = v; });
+photoField("custodySheet", "sheetPreview", function(v){ sheetB64 = v; });
+["amBranch","retBranch","recFrom","cashFrom","retCashBranch"].forEach(function(id){ $(id).onchange = function(){ recalc(); scheduleSave(); disarm(); }; });
+
+$("submitBtn").onclick = function(){
+if(busy || !ctx) return;
+var w = $("workMsg"); clearMsg(w);
+var bad = recalc(), data = collect();
+if(bad){ msg(w,"في "+bad+" خانة مكتوب فيها حاجة مش رقم (باللون الأحمر). صححها الأول."); return; }
+if($("anotherMachine").value.trim() && !$("amBranch").value){ msg(w,"اختار الفرع اللي حوّلتله (Transfer To)."); return; }
+if($("amReturn").value.trim() && !$("retBranch").value){ msg(w,"اختار الفرع اللي رجّعتله الرصيد (Return To)."); return; }
+if($("received").value.trim() && !$("recFrom").value){ msg(w,"اختار الفرع اللي استلمت منه الرصيد (Balance From)."); return; }
+if($("retCash").value.trim() && !$("retCashBranch").value){ msg(w,"اختار الفرع اللي رجّعتله الكاش (Cash Return To)."); return; }
+if($("recCash").value.trim() && !$("cashFrom").value){ msg(w,"اختار الفرع اللي استلمت منه الكاش (Cash From)."); return; }
+if(!adminEdit && ctx.shift!=="morning" && !receiptB64){ msg(w,"ارفع صورة تقرير المكنة الأول."); return; }
+if(!adminEdit && !sheetB64){ msg(w, ctx.shift==="morning" ? "ارفع صورة صفحة 1 من محضر العهدة الأول." : "ارفع صورة صفحة الغلق من محضر العهدة الأول."); return; }
+if(!armed){
+armed = true;
+$("submitBtn").textContent = "تأكيد الرفع نهائيًا";
+$("submitBtn").className = "danger";
+msg(w, adminEdit ? ("هتكتبي التعديلات على شيت " + ctx.branch + " يوم " + ctx.date + " — Sales: " + $("s_sales").textContent + " — TRX: " + $("s_trx").textContent + ". لو متأكدة دوسي تاني.") : "هترفع تقفيل " + ctx.branch + " يوم " + ctx.date + " — Sales: " + $("s_sales").textContent + " — TRX: " + $("s_trx").textContent + ". بعد الرفع مش هتقدر تعدّل. لو متأكد دوس تأكيد الرفع.", "ok");
+return;
+}
+busy = true; $("submitBtn").disabled = true; clearTimeout(saveTimer); saveTimer = null; dirty = false;
+if(ctx.shift!=="morning" && receiptB64) data.receipt = receiptB64; if(sheetB64) data.custody_sheet = sheetB64;
+$("submitBtn").textContent = adminEdit ? "بيتحفظ في الشيت..." : "بيتأكد من الصور...";
+api(Object.assign({action:"submit", data:data}, ctx)).then(function(r){
+busy = false; $("submitBtn").disabled = false;
+if(!r.ok){ if(r.locked){ lockOut(); return; } if(r.admin_bad) lockOpening(); armed = true; disarm(); msg(w, r.error||"الرفع ما نجحش، جرب تاني."); return; }
+var c = ctx; ctx = null;
+$("work").classList.add("hidden");
+var dl = $("doneLink"); if(sheetUrl || r.sheet_url){ dl.querySelector("a").href = r.sheet_url || sheetUrl; dl.classList.remove("hidden"); }
+if(r.admin_saved) $("done").querySelector("h2").textContent = "التعديلات اتكتبت على الشيت";
+$("doneCtx").textContent = c.branch + " — " + c.date + " — " + c.employee + " — " + shiftName(c.shift);
+$("done").classList.remove("hidden"); setStatus("");
+}).catch(function(){ busy = false; $("submitBtn").disabled = false; armed = true; disarm(); msg(w,"مفيش اتصال بالسيرفر. الأرقام محفوظة، جرب ترفع تاني."); });
+};
+
+buildFoot(); buildCash(); addRows(20); recalc();
+})();
+</script>
+</body>
+</html>
+

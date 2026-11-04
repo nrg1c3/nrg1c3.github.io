@@ -457,10 +457,10 @@ ctx = {branch:b, pin:p, date:d, employee:s, shift:sh};
 $("ctx").textContent = b + " — " + d + " — " + s + " — " + shiftName(sh);
 day = r.day || day;
 var note = [];
-if(sh==="night") note.push((day.other && day.other.count) ? "رصيد بداية شفتك = رصيد المكنة اللي اتقفل عليه الشفت الصباحي. Money in Machine في الآخر = رصيد المكنة آخر اليوم (زي الشيت)." : "لسه مفيش شفت صباحي متسجل النهارده، فرصيد بداية شفتك = رصيد آخر اليوم اللي قبله.");
-if(sh!=="night") note.push(day.opening_editable ? "أول يوم في الشهر: اكتب رصيد المكنة اللي معاك. بعد كده الرصيد هيترحّل لوحده." : "رصيد المكنة مترحّل أوتوماتيك من الشفت/اليوم اللي قبلك ومقفول.");
+if(sh==="night") note.push((day.other && day.other.count) ? "رصيد بداية شفتك = رصيد المكنة اللي اتقفل عليه الشفت الصباحي. Money in Machine في الآخر = رصيد المكنة آخر اليوم (زي الشيت)." : "لسه مفيش شفت صباحي متسجل النهارده.");
+if(sh!=="night") note.push("اكتب رصيد المكنة اللي معاك أول الشفت. الشفت المسائي هياخد الرصيد والكاش اللي هتقفل عليهم.");
 note.push("Another Machine Transfer = تحويل رصيد (لكاش أو لفرع قصاد كاش) ومش بيغيّر العهدة. Another Machine Return Balance = رد رصيد كان متاخد من فرع تاني وبينزّل العهدة. Return Cash = رد المبلغ ده كاش بدل رصيد، بيطلع من جدول الفلوس وبينزّل العهدة برضو. Received Balance بيتضاف على رصيد المكنة وبيزوّد العهدة لحد ما يترد. Received Cash بيتعد في جدول الفلوس ومش بيغيّر العهدة. ممكن تكتب في الخانات كلها في نفس اليوم.");
-if(day.handover && ((day.handover.drawer||[]).some(function(v){return v;}) || (day.handover.safe||[]).some(function(v){return v;}))){ var h = day.handover; note.push("الكاش متسلم من " + h.employee + " (" + h.date + " — " + shiftName(h.shift) + (h.submitted?"":"، لسه مقفلش") + "). اعدّ الفلوس وعدّل لو في اختلاف."); }
+if(day.handover && ((day.handover.drawer||[]).some(function(v){return v;}) || (day.handover.safe||[]).some(function(v){return v;}))){ var h = day.handover; note.push("الكاش متسلم من " + h.employee + " (" + shiftName(h.shift) + (h.submitted?"":"، لسه مقفلش") + "). اعدّ الفلوس وعدّل لو في اختلاف."); }
 $("dayNote").textContent = note.join(" ");
 $("amBranch").innerHTML = branchOpts(b) + '<option value="other">Other — مكنة تانية</option>'; $("recFrom").innerHTML = branchOpts(b); $("retBranch").innerHTML = branchOpts(b); $("cashFrom").innerHTML = branchOpts(b); $("retCashBranch").innerHTML = branchOpts(b);
 $("receiptBox").classList.toggle("hidden", sh==="morning");

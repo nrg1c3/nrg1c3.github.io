@@ -398,7 +398,11 @@ var opening = isNight ? (day.opening||0) : (num($("opening").value)||0);
 if(isNight){ var startBal = opening + (o.in||0) - ((o.out||0) + (o.os||0)) - (o.cc||0) - (o.am||0) - (o.amRet||0) + (o.recBal||0); $("opening").value = String(Math.round(startBal*100)/100); }
 var move = (IN + (o.in||0)) - ((OUT + (o.out||0)) + (OS + (o.os||0))) - cc - am - amRet + recBal;
 var machine = opening + move;
-var extra = Math.max(0, (day.prev_extra||0) + recBal - amRet - retCash), custTotal = (day.custody||0) + extra;
+// balance received back from the same branch it was transferred to (a loan that came back) settles the transfer and does not raise custody
+var amB = $("anotherMachine").value.trim() ? $("amBranch").value : "", recB = $("received").value.trim() ? $("recFrom").value : "";
+var recC = $("recCash").value.trim() ? (num($("recCash").value)||0) : 0, cashB = $("recCash").value.trim() ? $("cashFrom").value : "";
+var settle = (amB || recB) ? ((amB && amB === recB) ? Math.max(0, Math.min(recBal, am - (cashB === amB ? recC : 0))) : 0) : (o.settle||0);
+var extra = Math.max(0, (day.prev_extra||0) + recBal - amRet - retCash - settle), custTotal = (day.custody||0) + extra;
 var total = notes + machine, diff = total - custTotal;
 $("k_cargo").textContent = fmt(notes); $("k_machine").textContent = fmt(machine);
 $("k_total").textContent = fmt(total);

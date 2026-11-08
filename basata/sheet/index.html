@@ -120,23 +120,6 @@ table.sheet{border-collapse:separate;border-spacing:0;min-width:760px;width:100%
 @keyframes draw{to{stroke-dashoffset:0}}
 @media (prefers-reduced-motion:reduce){#done circle,#done path{animation:none;stroke-dashoffset:0}}
 .center{text-align:center}
-
-/* customer signup: floating button (only while a shift is open) + dialog */
-#custFab{position:fixed;left:16px;bottom:max(16px,env(safe-area-inset-bottom));z-index:20;background:#25A35A;color:#fff;font-family:var(--display);font-weight:600;font-size:15px;padding:13px 18px;border-radius:999px;box-shadow:0 6px 20px rgba(16,42,46,.25);display:flex;align-items:center;gap:8px}
-#custFab b{background:rgba(255,255,255,.25);border-radius:999px;padding:0 8px;font-size:13px}
-#custFab b:empty{display:none}
-#work.hidden ~ #custFab{display:none}
-#custDlg{border:0;border-radius:18px;padding:0;width:min(440px,calc(100vw - 32px));color:var(--ink);box-shadow:0 20px 60px rgba(16,42,46,.35)}
-#custDlg::backdrop{background:rgba(16,42,46,.45)}
-#custDlg form{padding:20px}
-#custDlg h2{font-family:var(--display);font-weight:600;font-size:18px;margin:0 0 4px}
-#custDlg .lead{color:var(--muted);font-size:13px;margin:0 0 14px}
-#custDlg .f{margin-bottom:12px}
-#custPhone{direction:ltr;text-align:left;font-size:18px;letter-spacing:.5px;font-variant-numeric:tabular-nums}
-.consent{display:flex;gap:10px;align-items:flex-start;background:var(--soft);border:1.5px solid var(--line);border-radius:12px;padding:12px;font-size:14px;line-height:1.6;cursor:pointer}
-.consent input{width:22px;height:22px;flex:none;margin:1px 0 0;accent-color:var(--teal)}
-#custDlg .acts{display:flex;gap:8px;margin-top:14px}
-#custDlg .acts .primary{flex:1}
 </style>
 </head>
 <body>
@@ -197,7 +180,7 @@ table.sheet{border-collapse:separate;border-spacing:0;min-width:760px;width:100%
 <tr class="big"><td>Amount (In+Out)</td><td id="s_amount">0</td></tr>
 <tr class="big"><td>Sales</td><td id="s_sales">0</td></tr>
 </table>
-<p id="sumNote" class="hidden" style="font-size:12px;margin:8px 0 0">شامل الشفت الصباحي (اليوم كله). TRX للشفت ده بس.</p>
+<p id="sumNote" class="hidden" style="font-size:12px;margin:8px 0 0">شامل الشفت الصباحي (اليوم كله)، وTRX كمان.</p>
 </div>
 </div>
 </div>
@@ -233,7 +216,7 @@ table.sheet{border-collapse:separate;border-spacing:0;min-width:760px;width:100%
 <tr><td colspan="2" class="pick">Balance From — رصيد من فرع<select id="recFrom" style="margin-top:4px"></select></td></tr>
 <tr><td>Received Cash<br>مستلم كاش من فرع</td><td><input id="recCash" inputmode="decimal"></td></tr>
 <tr><td colspan="2" class="pick">Cash From — كاش من فرع<select id="cashFrom" style="margin-top:4px"></select></td></tr>
-<tr><td><span id="openLabel">Opening Machine Balance (رصيد المكنة)</span><br><button class="linkbtn" id="openAdmin" type="button" style="font-size:12px;padding:2px 0">تعديل الرصيد (للإدارة)</button></td><td><input id="opening" inputmode="decimal"></td></tr>
+<tr><td><span id="openLabel">Opening Machine Balance (رصيد المكنة)</span><br><small id="openHint" class="hidden" style="color:#065f46">مفتوح للتعديل (دخول الإدارة)</small></td><td><input id="opening" inputmode="decimal"></td></tr>
 <tr class="big"><td>Money in Machine (الإجمالي)</td><td id="k_machine">0</td></tr>
 <tr><td>Cash in Safe &amp; Cargo</td><td id="k_cargo">0</td></tr>
 <tr class="big"><td>Total Cash in Branch &amp; Machine</td><td id="k_total">0</td></tr>
@@ -268,8 +251,6 @@ table.sheet{border-collapse:separate;border-spacing:0;min-width:760px;width:100%
 </div>
 </section>
 
-<button type="button" id="custFab" aria-haspopup="dialog">+ تسجيل عميل <b id="custCount"></b></button>
-
 <section id="done" class="card hidden">
 <svg viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="45"/><path d="M30 52 l14 14 l26 -30"/></svg>
 <h2>اترفع التقفيل</h2>
@@ -279,26 +260,11 @@ table.sheet{border-collapse:separate;border-spacing:0;min-width:760px;width:100%
 </section>
 
 </main>
-
-<dialog id="custDlg" aria-labelledby="custTitle">
-<form method="dialog" id="custForm" novalidate>
-<h2 id="custTitle">تسجيل عميل</h2>
-<p class="lead">الرقم بيتسجل على فرعك عشان يوصله عروض بساطة على الواتساب. اسأل العميل الأول.</p>
-<div class="f"><label for="custPhone">رقم الموبايل</label><input id="custPhone" type="tel" inputmode="numeric" autocomplete="off" maxlength="16" placeholder="01xxxxxxxxx"></div>
-<div class="f"><label for="custName">الاسم (لو حب يقوله)</label><input id="custName" autocomplete="off" maxlength="40"></div>
-<div class="f"><label for="custService">عمل إيه النهارده؟</label>
-<select id="custService"><option>فودافون كاش</option><option>اتصالات كاش</option><option>أورنج كاش</option><option>WE Cash</option><option>محفظة بنك</option><option>إيداع</option><option>فواتير ومدفوعات</option><option>أخرى</option></select></div>
-<label class="consent"><input type="checkbox" id="custConsent"><span>العميل وافق إن يوصله عروض من بساطة على الواتساب، وعارف إنه يقدر يوقفها في أي وقت.</span></label>
-<div id="custMsg" class="msg"></div>
-<div class="acts"><button type="button" class="primary" id="custSave">سجّل العميل</button><button type="button" class="ghost" id="custClose">قفل</button></div>
-</form>
-</dialog>
-
 <script>
 (function(){
 var API = "https://api.nrg-egypt.com/webhook/basata-sheet-api";
 var COLS = 8, DENOMS = [200,100,50,20,10,5,1];
-var ctx = null, saveTimer = null, busy = false, armed = false, receiptB64 = "", sheetB64 = "", adminCode = "", openEditable = false, adminMode = false, adminEdit = false, sheetUrl = "";
+var ctx = null, saveTimer = null, busy = false, armed = false, receiptB64 = "", sheetB64 = "", adminCode = "", openEditable = false, adminMode = false, adminEdit = false, sheetUrl = "", openOrig = "";
 function disarm(){ if(!armed) return; armed = false; var b = document.getElementById("submitBtn"); b.textContent = adminEdit ? "حفظ التعديلات في الشيت" : "تقفيل ورفع الشفت"; b.className = "primary"; var w = document.getElementById("workMsg"); w.className = "msg"; }
 var $ = function(id){ return document.getElementById(id); };
 var TWO_MACHINES = ["طنطا","المقطم"];
@@ -371,7 +337,7 @@ another_machine:$("anotherMachine").value.trim(), am_branch:$("amBranch").value,
 am_return:$("amReturn").value.trim(), ret_branch:$("retBranch").value,
 received:$("received").value.trim(), rec_from:$("recFrom").value,
 rec_cash:$("recCash").value.trim(), cash_from:$("cashFrom").value,
-ret_cash:$("retCash").value.trim(), ret_cash_branch:$("retCashBranch").value, admin_code:adminCode, opening_admin:!!adminCode };
+ret_cash:$("retCash").value.trim(), ret_cash_branch:$("retCashBranch").value, admin_code:"", opening_admin: !!(adminMode && ctx && ctx.shift!=="night" && $("opening").value.trim() !== openOrig) };
 }
 function fill(d){
 d = d || {};
@@ -408,7 +374,7 @@ var IN = colSum[0]+colSum[1]+colSum[2]+colSum[3]+colSum[4], OUT = colSum[5]+colS
 var od = (ctx && ctx.shift==="night") ? (day.other||{}) : {};
 var dIN = IN + (od.in||0), dOUT = OUT + (od.out||0), dOS = OS + (od.os||0);
 $("s_in").textContent = fmt(dIN); $("s_out").textContent = fmt(dOUT); $("s_os").textContent = fmt(dOS);
-$("s_trx").textContent = trx; $("s_pay").textContent = fmt(dOS+dOUT);
+$("s_trx").textContent = trx + (od.trx||0); $("s_pay").textContent = fmt(dOS+dOUT);
 $("s_amount").textContent = fmt(dIN+dOUT); $("s_sales").textContent = fmt(dIN+dOUT+dOS);
 $("sumNote").classList.toggle("hidden", !(ctx && ctx.shift==="night" && (od.count||0) > 0));
 var dr=0, sf=0, notes=0;
@@ -467,7 +433,7 @@ else setStatus("⚠️ الحفظ ما نجحش: " + (r.error||""));
 }).catch(function(){ dirty = true; setStatus("⚠️ مفيش إنترنت — هيتحفظ لما يرجع"); });
 }
 function lockOpening(){ adminCode = ""; var op = $("opening"); if(!openEditable){ op.readOnly = true; op.style.background = "#f1f5f9"; } }
-$("openAdmin").onclick = function(){
+var _unusedOpenAdmin = function(){
 if(!ctx) return;
 var c = window.prompt("اكتب كود الإدارة عشان تعدّل رصيد المكنة");
 if(!c || !c.trim()) return;
@@ -517,9 +483,11 @@ armed = true; disarm();
 var op = $("opening");
 adminCode = ""; openEditable = !!day.opening_editable && sh!=="night";
 $("openLabel").textContent = sh==="night" ? "رصيد بداية الشفت (من تقفيل الصباحي)" : "Opening Machine Balance (رصيد المكنة)";
-$("openAdmin").style.display = sh==="night" ? "none" : "";
+if(adminMode && sh!=="night") openEditable = true;
+$("openHint").classList.toggle("hidden", !(adminMode && sh!=="night"));
 if(openEditable){ op.readOnly = false; op.style.background = ""; }
 else { if(!(r.draft && r.draft.opening_admin)) op.value = String(day.opening||0); op.readOnly = true; op.style.background = "#f1f5f9"; }
+openOrig = op.value.trim();
 recalc();
 $("login").classList.add("hidden"); $("work").classList.remove("hidden");
 setStatus(r.draft ? "✓ رجّعنا آخر حاجة اتحفظت" : "شيت جديد");
@@ -626,40 +594,6 @@ if(r.admin_saved) $("done").querySelector("h2").textContent = "التعديلا�
 $("doneCtx").textContent = c.branch + " — " + c.date + " — " + c.employee + " — " + shiftName(c.shift);
 $("done").classList.remove("hidden"); setStatus("");
 }).catch(function(){ busy = false; $("submitBtn").disabled = false; armed = true; disarm(); msg(w,"مفيش اتصال بالسيرفر. الأرقام محفوظة، جرب ترفع تاني."); });
-};
-
-// customer signup (Basata - Customer Signup workflow): uses the open shift's branch, PIN and employee
-var CUST_API = "https://api.nrg-egypt.com/webhook/basata-customer-api";
-var custAdded = 0, custBusy = false;
-function custPhoneClean(v){ return String(v||"").replace(/[٠-٩]/g,function(d){return "٠١٢٣٤٥٦٧٨٩".indexOf(d);}).replace(/[^\d+]/g,"").replace(/^\+?0020/,"0").replace(/^\+20/,"0").replace(/^20(?=1\d{9}$)/,"0"); }
-function custReset(){ $("custPhone").value = ""; $("custName").value = ""; $("custConsent").checked = false; }
-$("custFab").onclick = function(){
-if(!ctx) return;
-clearMsg($("custMsg")); custReset();
-var d = $("custDlg"); if(d.showModal) d.showModal(); else d.setAttribute("open","");
-setTimeout(function(){ $("custPhone").focus(); }, 50);
-};
-$("custClose").onclick = function(){ var d = $("custDlg"); if(d.close) d.close(); else d.removeAttribute("open"); };
-$("custPhone").addEventListener("keydown", function(e){ if(e.key==="Enter"){ e.preventDefault(); $("custSave").click(); } });
-$("custSave").onclick = function(){
-if(custBusy || !ctx) return;
-var m = $("custMsg"); clearMsg(m);
-var phone = custPhoneClean($("custPhone").value);
-if(!/^01[0125]\d{8}$/.test(phone)){ msg(m,"رقم الموبايل لازم يكون 11 رقم ويبدأ بـ 010 أو 011 أو 012 أو 015."); $("custPhone").focus(); return; }
-if(!$("custConsent").checked){ msg(m,"لازم تسأل العميل الأول وتعلّم إنه وافق."); return; }
-custBusy = true; $("custSave").disabled = true; $("custSave").textContent = "بيتسجل...";
-var body = JSON.stringify({branch:ctx.branch, pin:ctx.pin, employee:ctx.employee, phone:phone, name:$("custName").value.trim(), service:$("custService").value, consent:true});
-fetch(CUST_API,{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},body:body})
-.then(function(r){ return r.text(); })
-.then(function(t){ var r; try { r = JSON.parse(t); } catch(e){ r = {ok:false,error:"رد غير مفهوم من السيرفر"}; } return r; })
-.then(function(r){
-custBusy = false; $("custSave").disabled = false; $("custSave").textContent = "سجّل العميل";
-if(!r.ok){ msg(m, r.error || "التسجيل ما نجحش، جرب تاني."); return; }
-custAdded++; $("custCount").textContent = String(custAdded);
-msg(m, (r.message || "اتسجل العميل ✓") + " — " + phone, "ok");
-custReset(); $("custPhone").focus();
-})
-.catch(function(){ custBusy = false; $("custSave").disabled = false; $("custSave").textContent = "سجّل العميل"; msg(m,"مفيش اتصال بالسيرفر. جرب تاني."); });
 };
 
 buildFoot(); buildCash(); addRows(20); recalc();

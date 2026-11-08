@@ -268,6 +268,8 @@ var ctx = null, saveTimer = null, busy = false, armed = false, receiptB64 = "", 
 function disarm(){ if(!armed) return; armed = false; var b = document.getElementById("submitBtn"); b.textContent = adminEdit ? "حفظ التعديلات في الشيت" : "تقفيل ورفع الشفت"; b.className = "primary"; var w = document.getElementById("workMsg"); w.className = "msg"; }
 var $ = function(id){ return document.getElementById(id); };
 var TWO_MACHINES = ["طنطا","المقطم"];
+var NO_PHOTO_UNTIL = {"المقطم":"2026-11-07","حلوان":"2026-11-07","صفط اللبن":"2026-11-07"};
+var noPhotoOn = function(br, dt){ var u = NO_PHOTO_UNTIL[br]; return ["2026-11-01","2026-11-02","2026-11-03"].indexOf(dt) >= 0 || (!!u && dt >= "2026-11-01" && dt <= u); };
 var BRANCHES = ["المقطم","حلوان","صفط اللبن","طنطا"];
 function branchOpts(own){ return '<option value="">Select — اختار الفرع</option>' + BRANCHES.filter(function(b){ return b!==own; }).map(function(b){ return '<option>'+b+'</option>'; }).join(""); }
 var EMPLOYEES = {"المقطم":["ملك","يوسف"],"حلوان":["فاطمة","ليلى"],"صفط اللبن":["مروة","آية"],"طنطا":["مهند","نهلة"]};
@@ -464,7 +466,7 @@ note.push("Another Machine Transfer = تحويل رصيد (لكاش أو لفر�
 if(day.handover && ((day.handover.drawer||[]).some(function(v){return v;}) || (day.handover.safe||[]).some(function(v){return v;}))){ var h = day.handover; note.push("الكاش متسلم من " + h.employee + " (" + shiftName(h.shift) + (h.submitted?"":"، لسه مقفلش") + "). اعدّ الفلوس وعدّل لو في اختلاف."); }
 $("dayNote").textContent = note.join(" ");
 $("amBranch").innerHTML = branchOpts(b) + '<option value="other">Other — مكنة تانية</option>'; $("recFrom").innerHTML = branchOpts(b) + '<option value="مستخدم المكتب">مستخدم المكتب</option>'; $("retBranch").innerHTML = branchOpts(b); $("cashFrom").innerHTML = branchOpts(b); $("retCashBranch").innerHTML = branchOpts(b);
-var npDay = ["2026-11-01","2026-11-02","2026-11-03"].indexOf(d) >= 0, twoM = TWO_MACHINES.indexOf(b) >= 0;
+var npDay = noPhotoOn(b, d), twoM = TWO_MACHINES.indexOf(b) >= 0;
 $("receiptBox").classList.toggle("hidden", (sh==="morning" && !twoM) || npDay);
 $("receiptLabel").textContent = twoM ? "Machine Report — صورة تقرير المكنة بتاعة الشفت ده" : "Machine Report — صورة تقرير المكنة (اليوم كله)";
 $("receiptHint").textContent = twoM ? "الفرع ده شغال على مكنتين: صوّر تقرير مكنتك عن الشفت بتاعك بس. التحويلات الواردة + المدفوعات لازم تساوي Sales بتاع الشفت ده (+ Received Balance لو موجود)، والصادرة لازم تساوي Cash Center + Another Machine Transfer + Return." : "التحويلات الواردة + المدفوعات في التقرير لازم تساوي Total Sales بتاع اليوم كله (+ Received Balance لو موجود)، والتحويلات الصادرة لازم تساوي Cash Center + Another Machine Transfer + Return."; $("sheetBox").classList.toggle("hidden", npDay);
@@ -571,7 +573,7 @@ if($("amReturn").value.trim() && !$("retBranch").value){ msg(w,"اختار ال�
 if($("received").value.trim() && !$("recFrom").value){ msg(w,"اختار الفرع اللي استلمت منه الرصيد (Balance From)."); return; }
 if($("retCash").value.trim() && !$("retCashBranch").value){ msg(w,"اختار الفرع اللي رجّعتله الكاش (Cash Return To)."); return; }
 if($("recCash").value.trim() && !$("cashFrom").value){ msg(w,"اختار الفرع اللي استلمت منه الكاش (Cash From)."); return; }
-var noPhoto = ["2026-11-01","2026-11-02","2026-11-03"].indexOf(ctx.date) >= 0;
+var noPhoto = noPhotoOn(ctx.branch, ctx.date);
 if(!adminEdit && !noPhoto && (ctx.shift!=="morning" || TWO_MACHINES.indexOf(ctx.branch) >= 0) && !receiptB64){ msg(w,"ارفع صورة تقرير المكنة الأول."); return; }
 if(!adminEdit && !noPhoto && !sheetB64){ msg(w, ctx.shift==="morning" ? "ارفع صورة صفحة 1 من محضر العهدة الأول." : "ارفع صورة صفحة الغلق من محضر العهدة الأول."); return; }
 if(!armed){

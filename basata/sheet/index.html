@@ -278,8 +278,8 @@ var ctx = null, saveTimer = null, busy = false, armed = false, receiptB64 = "", 
 function disarm(){ if(!armed) return; armed = false; var b = document.getElementById("submitBtn"); b.textContent = adminEdit ? "حفظ التعديلات في الشيت" : "تقفيل ورفع الشفت"; b.className = "primary"; var w = document.getElementById("workMsg"); w.className = "msg"; }
 var $ = function(id){ return document.getElementById(id); };
 var TWO_MACHINES = ["طنطا"];
-var NO_PHOTO_UNTIL = {"المقطم":"2026-11-07","حلوان":"2026-11-07"};
-var PHOTOS_ALWAYS = ["صفط اللبن"];
+var NO_PHOTO_UNTIL = {"المقطم":"2026-11-07"};
+var PHOTOS_ALWAYS = ["صفط اللبن","حلوان"];
 var noPhotoOn = function(br, dt){ var u = NO_PHOTO_UNTIL[br]; if(PHOTOS_ALWAYS.indexOf(br) >= 0) return false; return ["2026-11-01","2026-11-02","2026-11-03"].indexOf(dt) >= 0 || (!!u && dt >= "2026-11-01" && dt <= u); };
 var BRANCHES = ["المقطم","حلوان","صفط اللبن","طنطا"];
 function branchOpts(own){ return '<option value="">Select — اختار الفرع</option>' + BRANCHES.filter(function(b){ return b!==own; }).map(function(b){ return '<option>'+b+'</option>'; }).join(""); }

@@ -434,9 +434,23 @@ return bad;
 }
 
 function setStatus(t){ $("status").textContent = t; }
-// Saving to the server costs one run each time, so the draft is saved every 10 minutes while
-// there are changes, and right away when the employee leaves the page or locks the phone.
-var dirty = false, lastSave = 0, SAVE_EVERY = 10*60*1000, MIN_GAP = 60*1000;
+// Owner (9 Nov): the manager follows the shift live, so the draft is saved 30 seconds after a change
+// (and right away when the employee leaves the page or locks the phone).
+var dirty = false, lastSave = 0, SAVE_EVERY = 30*1000, MIN_GAP = 15*1000, watchT = null;
+// Manager live view: on a shift that is not submitted yet, reload the employee's draft every 30 seconds
+// (stops as soon as the manager types anything herself, so her own edits are never wiped).
+function startWatch(){
+clearInterval(watchT);
+watchT = setInterval(function(){
+if(!ctx || !adminMode || adminEdit || dirty || busy || document.visibilityState !== "visible") return;
+api(Object.assign({action:"load"}, ctx)).then(function(r){
+if(!r || !r.ok || dirty) return;
+if(r.submitted){ clearInterval(watchT); setStatus("✓ الشفت اترفع — افتحيه من جديد عشان تشوفيه"); return; }
+fill(r.draft); recalc();
+setStatus("👀 متابعة مباشرة — آخر تحديث " + new Date().toLocaleTimeString("ar-EG",{hour:"2-digit",minute:"2-digit",second:"2-digit"}));
+}).catch(function(){});
+}, 30000);
+}
 function scheduleSave(){
 if(!ctx) return;
 if(adminEdit){ dirty = true; setStatus("فيه تعديلات — دوسي حفظ التعديلات في الشيت"); return; }
@@ -506,6 +520,7 @@ $("sheetHint").textContent = "عدد كل فئة وقت الغلق لازم يط
 }
 fill(r.draft);
 adminMode = !!r.admin; adminEdit = !!(r.admin && r.submitted); sheetUrl = r.sheet_url || "";
+clearInterval(watchT); if(adminMode && !adminEdit){ startWatch(); }
 $("adminBar").classList.toggle("hidden", !adminMode);
 if(adminMode){ $("adminNote").textContent = adminEdit ? ("الشفت ده اترفع قبل كده" + (r.submitted_at ? " (" + new Date(r.submitted_at).toLocaleString("ar-EG",{day:"numeric",month:"short",hour:"2-digit",minute:"2-digit"}) + ")" : "") + ". تقدري تعدّلي الأرقام ودوسي حفظ التعديلات، وهتتكتب على شيت الفرع على طول من غير صور.") : "الشفت ده لسه ما اترفعش. تقدري تعدّلي وتحفظي، والرفع النهائي محتاج الصور زي الموظف."; var sl = $("sheetLink"); if(sheetUrl){ sl.href = sheetUrl; sl.style.display = "inline-block"; } else sl.style.display = "none"; }
 armed = true; disarm();

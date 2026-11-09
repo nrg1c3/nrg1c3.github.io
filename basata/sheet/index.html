@@ -208,14 +208,24 @@ table.sheet{border-collapse:separate;border-spacing:0;min-width:760px;width:100%
 <tr><td>Cash Center</td><td><input id="cashCenter" inputmode="decimal"></td></tr>
 <tr><td>Another Machine — Transfer<br>تحويل رصيد</td><td><input id="anotherMachine" inputmode="decimal"></td></tr>
 <tr><td colspan="2" class="pick">Transfer To — محوّل لفرع<select id="amBranch" style="margin-top:4px"></select></td></tr>
+<tr><td>Transfer 2 — تحويل رصيد (فرع تاني)</td><td><input id="anotherMachine2" inputmode="decimal"></td></tr>
+<tr><td colspan="2" class="pick">Transfer To 2 — محوّل لفرع<select id="amBranch2" style="margin-top:4px"></select></td></tr>
 <tr><td>Another Machine — Return Balance<br>رد رصيد لفرع</td><td><input id="amReturn" inputmode="decimal"></td></tr>
 <tr><td colspan="2" class="pick">Return To — مردود لفرع<select id="retBranch" style="margin-top:4px"></select></td></tr>
+<tr><td>Return Balance 2 — رد رصيد (فرع تاني)</td><td><input id="amReturn2" inputmode="decimal"></td></tr>
+<tr><td colspan="2" class="pick">Return To 2 — مردود لفرع<select id="retBranch2" style="margin-top:4px"></select></td></tr>
 <tr><td>Return Cash<br>رد كاش لفرع</td><td><input id="retCash" inputmode="decimal"></td></tr>
 <tr><td colspan="2" class="pick">Cash Return To — كاش مردود لفرع<select id="retCashBranch" style="margin-top:4px"></select></td></tr>
+<tr><td>Return Cash 2 — رد كاش (فرع تاني)</td><td><input id="retCash2" inputmode="decimal"></td></tr>
+<tr><td colspan="2" class="pick">Cash Return To 2 — كاش مردود لفرع<select id="retCashBranch2" style="margin-top:4px"></select></td></tr>
 <tr><td>Received Balance<br>مستلم رصيد من فرع</td><td><input id="received" inputmode="decimal"></td></tr>
 <tr><td colspan="2" class="pick">Balance From — رصيد من فرع<select id="recFrom" style="margin-top:4px"></select></td></tr>
+<tr><td>Received Balance 2 — مستلم رصيد (فرع تاني)</td><td><input id="received2" inputmode="decimal"></td></tr>
+<tr><td colspan="2" class="pick">Balance From 2 — رصيد من فرع<select id="recFrom2" style="margin-top:4px"></select></td></tr>
 <tr><td>Received Cash<br>مستلم كاش من فرع</td><td><input id="recCash" inputmode="decimal"></td></tr>
 <tr><td colspan="2" class="pick">Cash From — كاش من فرع<select id="cashFrom" style="margin-top:4px"></select></td></tr>
+<tr><td>Received Cash 2 — مستلم كاش (فرع تاني)</td><td><input id="recCash2" inputmode="decimal"></td></tr>
+<tr><td colspan="2" class="pick">Cash From 2 — كاش من فرع<select id="cashFrom2" style="margin-top:4px"></select></td></tr>
 <tr><td><span id="openLabel">Opening Machine Balance (رصيد المكنة)</span><br><small id="openHint" class="hidden" style="color:#065f46">مفتوح للتعديل (دخول الإدارة)</small></td><td><input id="opening" inputmode="decimal"></td></tr>
 <tr class="big"><td>Money in Machine (الإجمالي)</td><td id="k_machine">0</td></tr>
 <tr><td>Cash in Safe &amp; Cargo</td><td id="k_cargo">0</td></tr>
@@ -339,7 +349,12 @@ another_machine:$("anotherMachine").value.trim(), am_branch:$("amBranch").value,
 am_return:$("amReturn").value.trim(), ret_branch:$("retBranch").value,
 received:$("received").value.trim(), rec_from:$("recFrom").value,
 rec_cash:$("recCash").value.trim(), cash_from:$("cashFrom").value,
-ret_cash:$("retCash").value.trim(), ret_cash_branch:$("retCashBranch").value, admin_code:"", opening_admin: !!(adminMode && ctx && ctx.shift!=="night" && $("opening").value.trim() !== openOrig) };
+ret_cash:$("retCash").value.trim(), ret_cash_branch:$("retCashBranch").value,
+another_machine2:$("anotherMachine2").value.trim(), am_branch2:$("amBranch2").value,
+am_return2:$("amReturn2").value.trim(), ret_branch2:$("retBranch2").value,
+received2:$("received2").value.trim(), rec_from2:$("recFrom2").value,
+rec_cash2:$("recCash2").value.trim(), cash_from2:$("cashFrom2").value,
+ret_cash2:$("retCash2").value.trim(), ret_cash_branch2:$("retCashBranch2").value, admin_code:"", opening_admin: !!(adminMode && ctx && ctx.shift!=="night" && $("opening").value.trim() !== openOrig) };
 }
 function fill(d){
 d = d || {};
@@ -350,6 +365,11 @@ $("amReturn").value = d.am_return||""; $("retBranch").value = d.ret_branch||"";
 $("received").value = d.received||""; $("recFrom").value = d.rec_from||"";
 $("recCash").value = d.rec_cash||""; $("cashFrom").value = d.cash_from||"";
 $("retCash").value = d.ret_cash||""; $("retCashBranch").value = d.ret_cash_branch||"";
+$("anotherMachine2").value = d.another_machine2||""; $("amBranch2").value = d.am_branch2==="مكنة تانية" ? "other" : (d.am_branch2||"");
+$("amReturn2").value = d.am_return2||""; $("retBranch2").value = d.ret_branch2||"";
+$("received2").value = d.received2||""; $("recFrom2").value = d.rec_from2||"";
+$("recCash2").value = d.rec_cash2||""; $("cashFrom2").value = d.cash_from2||"";
+$("retCash2").value = d.ret_cash2||""; $("retCashBranch2").value = d.ret_cash_branch2||"";
 var rows = d.rows||[];
 var need = Math.max(20, Math.ceil((rows.length+5)/10)*10);
 $("body").innerHTML = ""; addRows(need);
@@ -391,7 +411,7 @@ $("c_drawer").textContent = fmt(dr); $("c_safe").textContent = fmt(sf); $("c_not
 var isNight = !!(ctx && ctx.shift==="night");
 var o = isNight ? (day.other || {}) : {};
 // the sheet keeps one value per day for each of these: if this shift left one blank, the other shift's value is used
-var dayVal = function(id, k){ var v = $(id).value.trim(); return v ? (num(v)||0) : (o[k]||0); };
+var dayVal = function(id, k){ var v = $(id).value.trim(), v2 = $(id+"2") ? $(id+"2").value.trim() : ""; return (v || v2) ? ((num(v)||0) + (num(v2)||0)) : (o[k]||0); };
 var cc = dayVal("cashCenter","cc"), am = dayVal("anotherMachine","am"), amRet = dayVal("amReturn","amRet");
 var recBal = dayVal("received","recBal"), retCash = dayVal("retCash","retCash");
 var opening = isNight ? (day.opening||0) : (num($("opening").value)||0);
@@ -399,9 +419,10 @@ if(isNight){ var startBal = opening + (o.in||0) - ((o.out||0) + (o.os||0)) - (o.
 var move = (IN + (o.in||0)) - ((OUT + (o.out||0)) + (OS + (o.os||0))) - cc - am - amRet + recBal;
 var machine = opening + move;
 // balance received back from the same branch it was transferred to (a loan that came back) settles the transfer and does not raise custody
-var amB = $("anotherMachine").value.trim() ? $("amBranch").value : "", recB = $("received").value.trim() ? $("recFrom").value : "";
-var recC = $("recCash").value.trim() ? (num($("recCash").value)||0) : 0, cashB = $("recCash").value.trim() ? $("cashFrom").value : "";
-var settle = (amB || recB) ? ((amB && amB === recB) ? Math.max(0, Math.min(recBal, am - (cashB === amB ? recC : 0))) : 0) : (o.settle||0);
+var ent = function(a, b){ var out = []; ["", "2"].forEach(function(n){ var v = $(a+n).value.trim(); if(v) out.push({ amt: num(v)||0, br: $(b+n).value }); }); return out; };
+var trE = ent("anotherMachine","amBranch"), rbE = ent("received","recFrom"), rcE = ent("recCash","cashFrom");
+var sumBr = function(list, br){ return list.reduce(function(a, e){ return a + (e.br === br ? e.amt : 0); }, 0); };
+var settle = (trE.length || rbE.length) ? Math.min(recBal, trE.reduce(function(a, t){ return a + (t.br ? Math.max(0, Math.min(sumBr(rbE, t.br), t.amt - sumBr(rcE, t.br))) : 0); }, 0)) : (o.settle||0);
 var extra = Math.max(0, (day.prev_extra||0) + recBal - amRet - retCash - settle), custTotal = (day.custody||0) + extra;
 var total = notes + machine, diff = total - custTotal;
 $("k_cargo").textContent = fmt(notes); $("k_machine").textContent = fmt(machine);
@@ -470,6 +491,7 @@ note.push("Another Machine Transfer = تحويل رصيد (لكاش أو لفر�
 if(day.handover && ((day.handover.drawer||[]).some(function(v){return v;}) || (day.handover.safe||[]).some(function(v){return v;}))){ var h = day.handover; note.push("الكاش متسلم من " + h.employee + " (" + shiftName(h.shift) + (h.submitted?"":"، لسه مقفلش") + "). اعدّ الفلوس وعدّل لو في اختلاف."); }
 $("dayNote").textContent = note.join(" ");
 $("amBranch").innerHTML = branchOpts(b) + '<option value="other">Other — مكنة تانية</option>'; $("recFrom").innerHTML = branchOpts(b) + '<option value="مستخدم المكتب">مستخدم المكتب</option>'; $("retBranch").innerHTML = branchOpts(b); $("cashFrom").innerHTML = branchOpts(b); $("retCashBranch").innerHTML = branchOpts(b);
+$("amBranch2").innerHTML = $("amBranch").innerHTML; $("recFrom2").innerHTML = $("recFrom").innerHTML; $("retBranch2").innerHTML = $("retBranch").innerHTML; $("cashFrom2").innerHTML = $("cashFrom").innerHTML; $("retCashBranch2").innerHTML = $("retCashBranch").innerHTML;
 var npDay = noPhotoOn(b, d), twoM = TWO_MACHINES.indexOf(b) >= 0;
 $("receiptBox").classList.toggle("hidden", (sh==="morning" && !twoM) || npDay);
 $("receiptLabel").textContent = twoM ? "Machine Report — صورة تقرير المكنة بتاعة الشفت ده" : "Machine Report — صورة تقرير المكنة (اليوم كله)";
@@ -565,7 +587,7 @@ kept = kept.concat(imgs); render();
 }
 photoField("receipt", "receiptPreview", function(v){ receiptB64 = v; });
 photoField("custodySheet", "sheetPreview", function(v){ sheetB64 = v; });
-["amBranch","retBranch","recFrom","cashFrom","retCashBranch"].forEach(function(id){ $(id).onchange = function(){ recalc(); scheduleSave(); disarm(); }; });
+["amBranch","retBranch","recFrom","cashFrom","retCashBranch","amBranch2","retBranch2","recFrom2","cashFrom2","retCashBranch2"].forEach(function(id){ $(id).onchange = function(){ recalc(); scheduleSave(); disarm(); }; });
 
 $("submitBtn").onclick = function(){
 if(busy || !ctx) return;
@@ -577,6 +599,11 @@ if($("amReturn").value.trim() && !$("retBranch").value){ msg(w,"اختار ال�
 if($("received").value.trim() && !$("recFrom").value){ msg(w,"اختار الفرع اللي استلمت منه الرصيد (Balance From)."); return; }
 if($("retCash").value.trim() && !$("retCashBranch").value){ msg(w,"اختار الفرع اللي رجّعتله الكاش (Cash Return To)."); return; }
 if($("recCash").value.trim() && !$("cashFrom").value){ msg(w,"اختار الفرع اللي استلمت منه الكاش (Cash From)."); return; }
+if($("anotherMachine2").value.trim() && !$("amBranch2").value){ msg(w,"اختار الفرع التاني اللي حوّلتله (Transfer To 2)."); return; }
+if($("amReturn2").value.trim() && !$("retBranch2").value){ msg(w,"اختار الفرع التاني اللي رجّعتله الرصيد (Return To 2)."); return; }
+if($("received2").value.trim() && !$("recFrom2").value){ msg(w,"اختار الفرع التاني اللي استلمت منه الرصيد (Balance From 2)."); return; }
+if($("retCash2").value.trim() && !$("retCashBranch2").value){ msg(w,"اختار الفرع التاني اللي رجّعتله الكاش (Cash Return To 2)."); return; }
+if($("recCash2").value.trim() && !$("cashFrom2").value){ msg(w,"اختار الفرع التاني اللي استلمت منه الكاش (Cash From 2)."); return; }
 var noPhoto = noPhotoOn(ctx.branch, ctx.date);
 if(!adminEdit && !noPhoto && (ctx.shift!=="morning" || TWO_MACHINES.indexOf(ctx.branch) >= 0) && !receiptB64){ msg(w,"ارفع صورة تقرير المكنة الأول."); return; }
 if(!adminEdit && !noPhoto && !sheetB64){ msg(w, ctx.shift==="morning" ? "ارفع صورة صفحة 1 من محضر العهدة الأول." : "ارفع صورة صفحة الغلق من محضر العهدة الأول."); return; }

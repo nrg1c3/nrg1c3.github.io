@@ -412,8 +412,8 @@ $("c_drawer").textContent = fmt(dr); $("c_safe").textContent = fmt(sf); $("c_not
 // morning / full: this shift only. night: starts from the morning shift's closing balance and ends with the whole day (like the sheet)
 var isNight = !!(ctx && ctx.shift==="night");
 var o = isNight ? (day.other || {}) : {};
-// the sheet keeps one value per day for each of these: if this shift left one blank, the other shift's value is used
-var dayVal = function(id, k){ var v = $(id).value.trim(), v2 = $(id+"2") ? $(id+"2").value.trim() : ""; return (v || v2) ? ((num(v)||0) + (num(v2)||0)) : (o[k]||0); };
+// Owner (12 Nov): the day's value of each of these is this shift's entries PLUS the other shift's (never one instead of the other)
+var dayVal = function(id, k){ var v = $(id).value.trim(), v2 = $(id+"2") ? $(id+"2").value.trim() : ""; return (num(v)||0) + (num(v2)||0) + (o[k]||0); };
 var cc = dayVal("cashCenter","cc"), am = dayVal("anotherMachine","am"), amRet = dayVal("amReturn","amRet");
 var recBal = dayVal("received","recBal"), retCash = dayVal("retCash","retCash");
 var opening = isNight ? (day.opening||0) : (num($("opening").value)||0);
@@ -424,7 +424,7 @@ var machine = opening + move;
 var ent = function(a, b){ var out = []; ["", "2"].forEach(function(n){ var v = $(a+n).value.trim(); if(v) out.push({ amt: num(v)||0, br: $(b+n).value }); }); return out; };
 var trE = ent("anotherMachine","amBranch"), rbE = ent("received","recFrom"), rcE = ent("recCash","cashFrom");
 var sumBr = function(list, br){ return list.reduce(function(a, e){ return a + (e.br === br ? e.amt : 0); }, 0); };
-var settle = (trE.length || rbE.length) ? Math.min(recBal, trE.reduce(function(a, t){ return a + (t.br ? Math.max(0, Math.min(sumBr(rbE, t.br), t.amt - sumBr(rcE, t.br))) : 0); }, 0)) : (o.settle||0);
+var settle = Math.min(recBal, trE.reduce(function(a, t){ return a + (t.br ? Math.max(0, Math.min(sumBr(rbE, t.br), t.amt - sumBr(rcE, t.br))) : 0); }, 0) + (o.settle||0));
 var extra = Math.max(0, (day.prev_extra||0) + recBal - amRet - retCash - settle), custTotal = (day.custody||0) + extra;
 var total = notes + machine, diff = total - custTotal;
 $("k_cargo").textContent = fmt(notes); $("k_machine").textContent = fmt(machine);

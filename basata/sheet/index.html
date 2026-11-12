@@ -282,7 +282,8 @@ var NO_PHOTO_UNTIL = {"المقطم":"2026-11-07"};
 var PHOTOS_ALWAYS = ["صفط اللبن","حلوان"];
 var noPhotoOn = function(br, dt){ var u = NO_PHOTO_UNTIL[br]; if(PHOTOS_ALWAYS.indexOf(br) >= 0) return false; return ["2026-11-01","2026-11-02","2026-11-03"].indexOf(dt) >= 0 || (!!u && dt >= "2026-11-01" && dt <= u); };
 var BRANCHES = ["المقطم","حلوان","صفط اللبن","طنطا"];
-function branchOpts(own){ return '<option value="">Select — اختار الفرع</option>' + BRANCHES.filter(function(b){ return b!==own; }).map(function(b){ return '<option>'+b+'</option>'; }).join(""); }
+// Owner (12 Nov): the company is a choice in every branch list
+function branchOpts(own){ return '<option value="">Select — اختار الفرع</option>' + BRANCHES.filter(function(b){ return b!==own; }).map(function(b){ return '<option>'+b+'</option>'; }).join("") + '<option value="الشركة">الشركة</option>'; }
 var EMPLOYEES = {"المقطم":["ملك","يوسف"],"حلوان":["فاطمة","ليلى"],"صفط اللبن":["مروة","آية"],"طنطا":["مهند","نهلة"]};
 $("branch").onchange = function(){ var list = EMPLOYEES[this.value]||[]; $("employeeSel").innerHTML = '<option value="">اختار اسمك</option>' + list.map(function(n){ return '<option>'+n+'</option>'; }).join(""); };
 
@@ -505,7 +506,7 @@ if(sh!=="night") note.push(day.opening_editable ? "أول يوم في الشهر
 note.push("Another Machine Transfer = تحويل رصيد (لكاش أو لفرع قصاد كاش) ومش بيغيّر العهدة. Another Machine Return Balance = رد رصيد كان متاخد من فرع تاني وبينزّل العهدة. Return Cash = رد المبلغ ده كاش بدل رصيد، بيطلع من جدول الفلوس وبينزّل العهدة برضو. Received Balance بيتضاف على رصيد المكنة وبيزوّد العهدة لحد ما يترد. Received Cash بيتعد في جدول الفلوس ومش بيغيّر العهدة. ممكن تكتب في الخانات كلها في نفس اليوم.");
 if(day.handover && ((day.handover.drawer||[]).some(function(v){return v;}) || (day.handover.safe||[]).some(function(v){return v;}))){ var h = day.handover; note.push("الكاش متسلم من " + h.employee + " (" + shiftName(h.shift) + (h.submitted?"":"، لسه مقفلش") + "). اعدّ الفلوس وعدّل لو في اختلاف."); }
 $("dayNote").textContent = note.join(" ");
-$("amBranch").innerHTML = branchOpts(b) + '<option value="other">Other — مكنة تانية</option>'; $("recFrom").innerHTML = branchOpts(b) + '<option value="الشركة">الشركة</option><option value="مستخدم المكتب">مستخدم المكتب</option>'; $("retBranch").innerHTML = branchOpts(b) + '<option value="الشركة">الشركة</option>'; $("cashFrom").innerHTML = branchOpts(b) + '<option value="كاش سنتر">كاش سنتر</option>'; $("retCashBranch").innerHTML = branchOpts(b) + '<option value="كاش سنتر">كاش سنتر</option>';
+$("amBranch").innerHTML = branchOpts(b) + '<option value="other">Other — مكنة تانية</option>'; $("recFrom").innerHTML = branchOpts(b) + '<option value="مستخدم المكتب">مستخدم المكتب</option>'; $("retBranch").innerHTML = branchOpts(b); $("cashFrom").innerHTML = branchOpts(b) + '<option value="كاش سنتر">كاش سنتر</option>'; $("retCashBranch").innerHTML = branchOpts(b) + '<option value="كاش سنتر">كاش سنتر</option>';
 $("amBranch2").innerHTML = $("amBranch").innerHTML; $("recFrom2").innerHTML = $("recFrom").innerHTML; $("retBranch2").innerHTML = $("retBranch").innerHTML; $("cashFrom2").innerHTML = $("cashFrom").innerHTML; $("retCashBranch2").innerHTML = $("retCashBranch").innerHTML;
 var npDay = noPhotoOn(b, d), twoM = TWO_MACHINES.indexOf(b) >= 0;
 $("receiptBox").classList.toggle("hidden", (sh==="morning" && !twoM) || npDay);

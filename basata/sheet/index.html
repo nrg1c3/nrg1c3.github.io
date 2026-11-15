@@ -642,6 +642,8 @@ if($("retCash2").value.trim() && !$("retCashBranch2").value){ msg(w,"اختار 
 if($("recCash2").value.trim() && !$("cashFrom2").value){ msg(w,"اختار الفرع التاني اللي استلمت منه الكاش (Cash From 2)."); return; }
 var noPhoto = noPhotoOn(ctx.branch, ctx.date);
 if(!adminEdit && !noPhoto && (ctx.shift!=="morning" || TWO_MACHINES.indexOf(ctx.branch) >= 0) && !receiptB64){ msg(w,"ارفع صورة تقرير المكنة الأول."); return; }
+// Owner (15 Nov): the same photo was picked for the machine report and the custody page, so the custody check could not find the closing page
+if(!adminEdit && !noPhoto && receiptB64 && sheetB64 && receiptB64 === sheetB64){ msg(w,"إنت رافع نفس الصورة في خانة تقرير المكنة وخانة محضر العهدة. صوّر كل ورقة لوحدها: صورة لتقرير المكنة، وصورة لصفحة الغلق من المحضر."); return; }
 if(!adminEdit && !noPhoto && !sheetB64){ msg(w, ctx.shift==="morning" ? "ارفع صورة صفحة 1 من محضر العهدة الأول." : "ارفع صورة صفحة الغلق من محضر العهدة الأول."); return; }
 if(!armed){
 armed = true;

@@ -274,6 +274,19 @@ table.sheet{border-collapse:separate;border-spacing:0;min-width:760px;width:100%
 (function(){
 var API = "https://api.nrg-egypt.com/webhook/basata-sheet-api";
 var COLS = 8, DENOMS = [200,100,50,20,10,5,1];
+// Owner (15 Nov): the same shift open on two devices showed different rows (each page kept its own copy and the last save
+// won). Every save now carries the version it was loaded from: a save from an older copy is refused and the page loads the
+// latest one, and an idle page picks up changes made on the other device every 30 seconds.
+var curRev = "";
+function newRev(){ return Date.now().toString(36) + Math.random().toString(36).slice(2, 10); }
+function reloadLatest(t){
+if(!ctx) return;
+api(Object.assign({action:"load"}, ctx)).then(function(r){
+if(!r || !r.ok) return;
+fill(r.draft); curRev = (r.draft && r.draft.rev) || ""; dirty = false; recalc();
+setStatus(t || "⚠️ الشفت اتعدّل من جهاز تاني — دي آخر نسخة، راجعها وكمّل عليها");
+}).catch(function(){});
+}
 var ctx = null, saveTimer = null, busy = false, armed = false, receiptB64 = "", sheetB64 = "", adminCode = "", openEditable = false, adminMode = false, adminEdit = false, sheetUrl = "", openOrig = "";
 function disarm(){ if(!armed) return; armed = false; var b = document.getElementById("submitBtn"); b.textContent = adminEdit ? "حفظ التعديلات في الشيت" : "تقفيل ورفع الشفت"; b.className = "primary"; var w = document.getElementById("workMsg"); w.className = "msg"; }
 var $ = function(id){ return document.getElementById(id); };
@@ -443,11 +456,14 @@ var dirty = false, lastSave = 0, SAVE_EVERY = 30*1000, MIN_GAP = 15*1000, watchT
 function startWatch(){
 clearInterval(watchT);
 watchT = setInterval(function(){
-if(!ctx || !adminMode || adminEdit || dirty || busy || document.visibilityState !== "visible") return;
+if(!ctx || adminEdit || dirty || busy || document.visibilityState !== "visible") return;
 api(Object.assign({action:"load"}, ctx)).then(function(r){
 if(!r || !r.ok || dirty) return;
 if(r.submitted){ clearInterval(watchT); setStatus("✓ الشفت اترفع — افتحيه من جديد عشان تشوفيه"); return; }
-fill(r.draft); recalc();
+var rv = (r.draft && r.draft.rev) || "";
+if(!adminMode && rv === curRev) return;
+fill(r.draft); curRev = rv; recalc();
+if(!adminMode){ setStatus("🔄 اتحدّث من جهاز تاني " + new Date().toLocaleTimeString("ar-EG",{hour:"2-digit",minute:"2-digit"})); return; }
 setStatus("👀 متابعة مباشرة — آخر تحديث " + new Date().toLocaleTimeString("ar-EG",{hour:"2-digit",minute:"2-digit",second:"2-digit"}));
 }).catch(function(){});
 }, 30000);
@@ -467,8 +483,11 @@ if(!ctx) return Promise.resolve();
 clearTimeout(saveTimer); saveTimer = null;
 dirty = false; lastSave = Date.now();
 setStatus("بيتحفظ...");
-var payload = Object.assign({action:"save", data:collect()}, ctx);
+var payload = Object.assign({action:"save", data:collect()}, ctx), nr = newRev();
+payload.data.rev = nr; payload.data.base_rev = curRev;
 return api(payload).then(function(r){
+if(r.ok) curRev = nr;
+if(r.conflict){ reloadLatest(); return; }
 if(r.ok) setStatus("✓ اتحفظ " + new Date().toLocaleTimeString("ar-EG",{hour:"2-digit",minute:"2-digit"}));
 else if(r.admin_bad){ lockOpening(); setStatus("⚠️ كود الإدارة غلط — الرصيد اتقفل تاني"); dirty = true; }
 else if(r.locked){ lockOut(); }
@@ -519,9 +538,9 @@ $("sheetHint").textContent = "الفترة المسائية (التسليم لل
 $("sheetLabel").textContent = "Custody Sheet — صورة صفحة الغلق من محضر العهدة";
 $("sheetHint").textContent = "عدد كل فئة وقت الغلق لازم يطابق جدول الفلوس، والأرصدة وقت الغلق لازم تطابق الرصيد المتاح في تقرير المكنة." + "";
 }
-fill(r.draft);
+fill(r.draft); curRev = (r.draft && r.draft.rev) || "";
 adminMode = !!r.admin; adminEdit = !!(r.admin && r.submitted); sheetUrl = r.sheet_url || "";
-clearInterval(watchT); if(adminMode && !adminEdit){ startWatch(); }
+clearInterval(watchT); if(!adminEdit){ startWatch(); }
 $("adminBar").classList.toggle("hidden", !adminMode);
 if(adminMode){ $("adminNote").textContent = adminEdit ? ("الشفت ده اترفع قبل كده" + (r.submitted_at ? " (" + new Date(r.submitted_at).toLocaleString("ar-EG",{day:"numeric",month:"short",hour:"2-digit",minute:"2-digit"}) + ")" : "") + ". تقدري تعدّلي الأرقام ودوسي حفظ التعديلات، وهتتكتب على شيت الفرع على طول من غير صور.") : "الشفت ده لسه ما اترفعش. تقدري تعدّلي وتحفظي، والرفع النهائي محتاج الصور زي الموظف."; var sl = $("sheetLink"); if(sheetUrl){ sl.href = sheetUrl; sl.style.display = "inline-block"; } else sl.style.display = "none"; }
 armed = true; disarm();
@@ -633,9 +652,11 @@ return;
 }
 busy = true; $("submitBtn").disabled = true; clearTimeout(saveTimer); saveTimer = null; dirty = false;
 if(receiptB64) data.receipt = receiptB64; if(sheetB64) data.custody_sheet = sheetB64;
+var subRev = newRev(); data.rev = subRev; data.base_rev = curRev;
 $("submitBtn").textContent = (adminEdit || noPhoto) ? "بيتحفظ في الشيت..." : "بيتأكد من الصور...";
 api(Object.assign({action:"submit", data:data}, ctx)).then(function(r){
 busy = false; $("submitBtn").disabled = false;
+if(!r.ok && r.conflict){ armed = true; disarm(); msg(w, r.error); reloadLatest(); return; }
 if(!r.ok){ if(r.locked){ lockOut(); return; } if(r.admin_bad) lockOpening(); armed = true; disarm(); msg(w, r.error||"الرفع ما نجحش، جرب تاني."); return; }
 var c = ctx; ctx = null;
 $("work").classList.add("hidden");

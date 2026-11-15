@@ -73,6 +73,8 @@ h2{font-family:var(--display);font-weight:600;font-size:20px;margin:0 0 4px}
 .ring.out{--ringc:var(--out)}
 .window{text-align:center;color:var(--muted);font-size:14px;margin:0}
 .alt{display:block;margin:6px auto 0}
+.alt.flash{background:#fff3cd;color:#7a4b00;border-radius:10px;padding:10px 14px;font-weight:700;outline:2px solid #e0a800;animation:altp 1s ease-in-out 3}
+@keyframes altp{50%{transform:scale(1.06)}}
 
 .msg{border-radius:14px;padding:12px 14px;margin-top:16px;font-size:15px}
 .msg.err{background:var(--errbg);color:var(--err)}
@@ -313,18 +315,32 @@ function mark(action){
   var m = $("actMsg"); msg(m,"");
   if(!navigator.geolocation){ msg(m,"الموبايل ده مش بيدعم تحديد الموقع. سجّل من موبايل تاني فيه GPS."); return; }
   busy = true; $("punch").disabled = true; $("punchSmall").textContent = "بنحدد موقعك…";
-  navigator.geolocation.getCurrentPosition(function(pos){
+  // Owner (15 Nov): some phone browsers never answer the location request, so the button hung and the clock-in never
+  // reached the system. A watchdog stops waiting after 30 s, and a slow GPS gets one more try with a rougher fix.
+  var settled = false, tried = 0;
+  var giveUp = function(t){ if(settled) return; settled = true; busy = false; $("punch").disabled = false; drawPunch(); msg(m, t); };
+  var dog = setTimeout(function(){ giveUp("الموقع ما اتحددش ومتسجلش حاجة. افتح الـ GPS واتأكد إن المتصفح مسموحله بالموقع، وجرّب تاني."); }, 30000);
+  var send = function(pos){
+    if(settled) return; settled = true; clearTimeout(dog);
     api({action:action, branch:me.branch, employee:me.employee, code:me.code, shift:shift, lat:pos.coords.latitude, lng:pos.coords.longitude, acc:Math.round(pos.coords.accuracy||0)}).then(function(r){
       busy = false; $("punch").disabled = false;
-      if(!r.ok){ msg(m, r.error || "التسجيل ما نجحش. جرّب تاني."); drawPunch(); return; }
+      if(!r.ok){ msg(m, r.error || "التسجيل ما نجحش. جرّب تاني."); drawPunch(); if(r.late_in){ var a = $("altBtn"); a.classList.add("flash"); setTimeout(function(){ a.classList.remove("flash"); }, 6000); } return; }
       done(action, String(r.message||"").replace(/^[^؀-ۿ]+/,"").replace(/^تم تسجيل (حضورك|انصرافك) /,""));
       if(r.records){ st.records = r.records; showStatus(st); } else api({action:"status", branch:me.branch, employee:me.employee, code:me.code}).then(function(s){ if(s.ok) showStatus(s); });
     }).catch(function(){ busy = false; $("punch").disabled = false; drawPunch(); msg(m,"مفيش اتصال بالنت. جرّب تاني."); });
-  }, function(err){
-    busy = false; $("punch").disabled = false; drawPunch();
-    msg(m, err.code === 1 ? "الصفحة محتاجة إذن الموقع. افتح إعدادات المتصفح، اسمح بالموقع للصفحة دي، وافتح الـ GPS." : "الموقع ما اتحددش. افتح الـ GPS، استنى ثواني، وجرّب تاني.");
-  }, {enableHighAccuracy:true, timeout:20000, maximumAge:0});
+  };
+  var fail = function(err){
+    if(settled) return;
+    if(err.code !== 1 && !tried){ tried = 1; navigator.geolocation.getCurrentPosition(send, fail, {enableHighAccuracy:false, timeout:12000, maximumAge:60000}); return; }
+    clearTimeout(dog);
+    giveUp(err.code === 1 ? "الصفحة محتاجة إذن الموقع. افتح إعدادات المتصفح، اسمح بالموقع للصفحة دي، وافتح الـ GPS. متسجلش حاجة." : "الموقع ما اتحددش ومتسجلش حاجة. افتح الـ GPS، استنى ثواني، وجرّب تاني.");
+  };
+  navigator.geolocation.getCurrentPosition(send, fail, {enableHighAccuracy:true, timeout:15000, maximumAge:0});
 }
+// Owner (15 Nov): a page left open since the morning shows what the system really has as soon as it is opened again
+function refresh(){ if(me && !busy) api({action:"status", branch:me.branch, employee:me.employee, code:me.code}).then(function(s){ if(s.ok) showStatus(s); }).catch(function(){}); }
+document.addEventListener("visibilitychange", function(){ if(document.visibilityState === "visible") refresh(); });
+window.addEventListener("pageshow", function(e){ if(e.persisted) refresh(); });
 $("punch").onclick = function(){ mark(openRec() ? "out" : "in"); };
 $("altBtn").onclick = function(){ mark("out"); };
 

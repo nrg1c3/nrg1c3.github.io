@@ -640,6 +640,9 @@ if($("amReturn2").value.trim() && !$("retBranch2").value){ msg(w,"اختار ا�
 if($("received2").value.trim() && !$("recFrom2").value){ msg(w,"اختار الفرع التاني اللي استلمت منه الرصيد (Balance From 2)."); return; }
 if($("retCash2").value.trim() && !$("retCashBranch2").value){ msg(w,"اختار الفرع التاني اللي رجّعتله الكاش (Cash Return To 2)."); return; }
 if($("recCash2").value.trim() && !$("cashFrom2").value){ msg(w,"اختار الفرع التاني اللي استلمت منه الكاش (Cash From 2)."); return; }
+// Owner (17 Nov): a branch picked with no amount next to it is refused (a transfer can't be matched without its amount)
+var BR_AMT=[["amBranch","anotherMachine","Transfer To"],["retBranch","amReturn","Return To"],["recFrom","received","Balance From"],["retCashBranch","retCash","Cash Return To"],["cashFrom","recCash","Cash From"],["amBranch2","anotherMachine2","Transfer To 2"],["retBranch2","amReturn2","Return To 2"],["recFrom2","received2","Balance From 2"],["retCashBranch2","retCash2","Cash Return To 2"],["cashFrom2","recCash2","Cash From 2"]];
+for(var bi=0;bi<BR_AMT.length;bi++){ var bx=BR_AMT[bi]; if($(bx[0]).value && !(Number(String($(bx[1]).value).replace(/,/g,""))>0)){ msg(w,"اخترت فرع في ("+bx[2]+") من غير ما تكتب المبلغ. اكتب المبلغ أو امسح الفرع."); return; } }
 var noPhoto = noPhotoOn(ctx.branch, ctx.date);
 if(!adminEdit && !noPhoto && (ctx.shift!=="morning" || TWO_MACHINES.indexOf(ctx.branch) >= 0) && !receiptB64){ msg(w,"ارفع صورة تقرير المكنة الأول."); return; }
 // Owner (15 Nov): the same photo was picked for the machine report and the custody page, so the custody check could not find the closing page

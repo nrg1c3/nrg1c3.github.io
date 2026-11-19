@@ -231,7 +231,7 @@ table.sheet{border-collapse:separate;border-spacing:0;min-width:760px;width:100%
 <tr><td>Cash in Safe &amp; Cargo</td><td id="k_cargo">0</td></tr>
 <tr class="big"><td>Total Cash in Branch &amp; Machine</td><td id="k_total">0</td></tr>
 <tr><td>Custody (العهدة)</td><td id="k_custody">0</td></tr>
-<tr><td>رصيد فوق العهدة</td><td id="k_extra">0</td></tr>
+<tr><td>صافي التحويلات بين الفروع (+/−)</td><td id="k_extra">0</td></tr>
 <tr><td>إجمالي العهدة</td><td id="k_custTotal">0</td></tr>
 <tr class="big"><td>Difference (الفرق)</td><td id="k_diff">0</td></tr>
 </table>
@@ -439,7 +439,11 @@ var ent = function(a, b){ var out = []; ["", "2"].forEach(function(n){ var v = $
 var trE = ent("anotherMachine","amBranch"), rbE = ent("received","recFrom"), rcE = ent("recCash","cashFrom");
 var sumBr = function(list, br){ return list.reduce(function(a, e){ return a + (e.br === br ? e.amt : 0); }, 0); };
 var settle = Math.min(recBal, trE.reduce(function(a, t){ return a + (t.br ? Math.max(0, Math.min(sumBr(rbE, t.br), t.amt - sumBr(rcE, t.br))) : 0); }, 0) + (o.settle||0));
-var extra = Math.max(0, (day.prev_extra||0) + recBal - amRet - retCash - settle), custTotal = (day.custody||0) + extra;
+// Owner (19 Nov): custody moves with money between the four branches (received raises it, sent/returned lowers it, balance or cash). Company / cash center are not counted.
+var BRS = ["المقطم","حلوان","صفط اللبن","طنطا"];
+var brNet = function(pairs, sign){ var t = 0; pairs.forEach(function(pr){ ["", "2"].forEach(function(n){ var v = $(pr[0]+n).value.trim(); if(v && BRS.indexOf(String($(pr[1]+n).value).trim()) >= 0) t += sign*(num(v)||0); }); }); return t; };
+var netBr = brNet([["received","recFrom"],["recCash","cashFrom"]], 1) + brNet([["anotherMachine","amBranch"],["amReturn","retBranch"],["retCash","retCashBranch"]], -1) + (o.netBr||0);
+var extra = (day.prev_extra||0) + netBr, custTotal = (day.custody||0) + extra;
 var total = notes + machine, diff = total - custTotal;
 $("k_cargo").textContent = fmt(notes); $("k_machine").textContent = fmt(machine);
 $("k_total").textContent = fmt(total);

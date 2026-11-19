@@ -255,6 +255,7 @@ table.sheet{border-collapse:separate;border-spacing:0;min-width:760px;width:100%
 <p id="sheetHint" style="font-size:12px;color:var(--muted);margin:6px 0 0"></p>
 </div>
 <div style="height:16px"></div>
+<div id="paperHint" style="border:2px solid #0f766e;border-radius:12px;padding:10px 12px;margin:0 0 12px;font-size:15px;line-height:1.9;background:#f0fdfa"></div>
 <button class="primary" style="width:100%" id="submitBtn">تقفيل ورفع الشفت</button>
 <p style="font-size:13px;color:var(--muted);margin:10px 0 0;text-align:center">بعد الرفع الشيت بيتقفل ومش هتقدر تفتحه أو تعدّله تاني.</p>
 <div id="workMsg" class="msg"></div>
@@ -444,6 +445,10 @@ $("k_cargo").textContent = fmt(notes); $("k_machine").textContent = fmt(machine)
 $("k_total").textContent = fmt(total);
 $("k_custody").textContent = fmt(day.custody||0); $("k_extra").textContent = fmt(extra); $("k_custTotal").textContent = fmt(custTotal);
 $("k_diff").textContent = fmt(diff); $("k_diff").className = Math.abs(diff) >= 1 ? "neg" : "";
+// Owner (19 Nov): the custody paper is checked to the piaster: show the employee exactly what to write on it
+var f2 = function(v){ return (Math.round(v*100)/100).toLocaleString("en-US", {minimumFractionDigits: 2, maximumFractionDigits: 2}); };
+var hintSec = (ctx && ctx.shift==="morning") ? "الفترة المسائية (التسليم للشفت المسائي)" : "وقت الغلق";
+$("paperHint").innerHTML = "<b>اكتب في المحضر (" + hintSec + ") بالظبط، بالقروش:</b><br>الكاش في الخزينة: <b>" + f2(notes) + "</b><br>رصيد المكنة: <b>" + f2(machine) + "</b><br>الإجمالي (الكاش + الرصيد): <b>" + f2(total) + "</b>" + (Math.abs(diff) >= 0.01 ? "<br><span style='color:#b91c1c'>" + (diff < 0 ? "عجز " : "زيادة ") + f2(Math.abs(diff)) + " عن العهدة (" + f2(custTotal) + ") — اكتب الإجمالي الحقيقي زي ما هو</span>" : "");
 return bad;
 }
 
